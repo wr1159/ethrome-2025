@@ -90,11 +90,14 @@ export default function Demo(
 
   useEffect(() => {
     const load = async () => {
+      console.log("Frame action: Loading SDK context...");
       const context = await sdk.context;
+      console.log("Frame action: SDK Context loaded:", context);
       setContext(context);
       setAdded(context.client.added);
 
       sdk.on("frameAdded", ({ notificationDetails }) => {
+        console.log("Frame action: Frame added event:", { notificationDetails });
         setLastEvent(
           `frameAdded${!!notificationDetails ? ", notifications enabled" : ""}`
         );
@@ -106,29 +109,33 @@ export default function Demo(
       });
 
       sdk.on("frameAddRejected", ({ reason }) => {
+        console.log("Frame action: Frame add rejected:", { reason });
         setLastEvent(`frameAddRejected, reason ${reason}`);
       });
 
       sdk.on("frameRemoved", () => {
+        console.log("Frame action: Frame removed event");
         setLastEvent("frameRemoved");
         setAdded(false);
         setNotificationDetails(null);
       });
 
       sdk.on("notificationsEnabled", ({ notificationDetails }) => {
+        console.log("Frame action: Notifications enabled:", { notificationDetails });
         setLastEvent("notificationsEnabled");
         setNotificationDetails(notificationDetails);
       });
       sdk.on("notificationsDisabled", () => {
+        console.log("Frame action: Notifications disabled");
         setLastEvent("notificationsDisabled");
         setNotificationDetails(null);
       });
 
       sdk.on("primaryButtonClicked", () => {
-        console.log("primaryButtonClicked");
+        console.log("Frame action: Primary button clicked");
       });
 
-      console.log("Calling ready");
+      console.log("Frame action: Calling SDK ready");
       sdk.actions.ready({});
 
 // Set up a MIPD Store, and request Providers.
@@ -152,22 +159,27 @@ store.subscribe(providerDetails => {
   }, [isSDKLoaded]);
 
   const openUrl = useCallback(() => {
+    console.log("Frame action: Opening URL action");
     sdk.actions.openUrl("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   }, []);
 
   const openWarpcastUrl = useCallback(() => {
+    console.log("Frame action: Opening Warpcast URL action");
     sdk.actions.openUrl("https://warpcast.com/~/compose");
   }, []);
 
   const close = useCallback(() => {
+    console.log("Frame action: Closing frame action");
     sdk.actions.close();
   }, []);
 
   const addFrame = useCallback(async () => {
+    console.log("Frame action: Adding frame...");
     try {
       setNotificationDetails(null);
 
       const result = await sdk.actions.addFrame();
+      console.log("Frame action: Add frame result:", result);
 
       if (result.notificationDetails) {
         setNotificationDetails(result.notificationDetails);
@@ -178,6 +190,7 @@ store.subscribe(providerDetails => {
           : "Added, got no notification details"
       );
     } catch (error) {
+      console.error("Frame action: Add frame error:", error);
       if (error instanceof AddFrame.RejectedByUser) {
         setAddFrameResult(`Not added: ${error.message}`);
       }
@@ -191,12 +204,18 @@ store.subscribe(providerDetails => {
   }, []);
 
   const sendNotification = useCallback(async () => {
+    console.log("Frame action: Sending notification...");
     setSendNotificationResult("");
     if (!notificationDetails || !context) {
+      console.log("Frame action: Cannot send notification - missing details or context");
       return;
     }
 
     try {
+      console.log("Frame action: Notification payload:", {
+        fid: context.user.fid,
+        notificationDetails,
+      });
       const response = await fetch("/api/send-notification", {
         method: "POST",
         mode: "same-origin",
@@ -208,16 +227,20 @@ store.subscribe(providerDetails => {
       });
 
       if (response.status === 200) {
+        console.log("Frame action: Notification sent successfully");
         setSendNotificationResult("Success");
         return;
       } else if (response.status === 429) {
+        console.log("Frame action: Notification rate limited");
         setSendNotificationResult("Rate limited");
         return;
       }
 
       const data = await response.text();
+      console.error("Frame action: Notification error:", data);
       setSendNotificationResult(`Error: ${data}`);
     } catch (error) {
+      console.error("Frame action: Notification error:", error);
       setSendNotificationResult(`Error: ${error}`);
     }
   }, [context, notificationDetails]);
