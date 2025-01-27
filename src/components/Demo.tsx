@@ -89,6 +89,18 @@ export default function Demo(
   }, [switchChain, chainId]);
 
   useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      console.log('Frame action: Received message from parent:', event.data);
+      if (event.data?.event === 'context') {
+        console.log('Frame action: Received context:', event.data.data);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  useEffect(() => {
     const load = async () => {
       console.log("Frame action: Loading SDK context...");
       const context = await sdk.context;
@@ -125,6 +137,7 @@ export default function Demo(
         setLastEvent("notificationsEnabled");
         setNotificationDetails(notificationDetails);
       });
+
       sdk.on("notificationsDisabled", () => {
         console.log("Frame action: Notifications disabled");
         setLastEvent("notificationsDisabled");
@@ -212,18 +225,16 @@ store.subscribe(providerDetails => {
     }
 
     try {
-      console.log("Frame action: Notification payload:", {
+      const payload = {
         fid: context.user.fid,
         notificationDetails,
-      });
+      };
+      console.log("Frame action: Notification payload:", payload);
       const response = await fetch("/api/send-notification", {
         method: "POST",
         mode: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fid: context.user.fid,
-          notificationDetails,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (response.status === 200) {
@@ -313,7 +324,7 @@ store.subscribe(providerDetails => {
 
           {isContextOpen && (
             <div className="p-4 mt-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x-">
+              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
                 {JSON.stringify(context, null, 2)}
               </pre>
             </div>
@@ -325,7 +336,7 @@ store.subscribe(providerDetails => {
 
           <div className="mb-4">
             <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg my-2">
-              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x-">
+              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
                 sdk.actions.signIn
               </pre>
             </div>
@@ -334,7 +345,7 @@ store.subscribe(providerDetails => {
 
           <div className="mb-4">
             <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg my-2">
-              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x-">
+              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
                 sdk.actions.openUrl
               </pre>
             </div>
@@ -343,7 +354,7 @@ store.subscribe(providerDetails => {
 
           <div className="mb-4">
             <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg my-2">
-              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x-">
+              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
                 sdk.actions.openUrl
               </pre>
             </div>
@@ -352,7 +363,7 @@ store.subscribe(providerDetails => {
 
           <div className="mb-4">
             <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg my-2">
-              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x-">
+              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
                 sdk.actions.viewProfile
               </pre>
             </div>
@@ -361,7 +372,7 @@ store.subscribe(providerDetails => {
 
           <div className="mb-4">
             <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg my-2">
-              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x-">
+              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
                 sdk.actions.close
               </pre>
             </div>
@@ -373,7 +384,7 @@ store.subscribe(providerDetails => {
           <h2 className="font-2xl font-bold">Last event</h2>
 
           <div className="p-4 mt-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-            <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x-">
+            <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
               {lastEvent || "none"}
             </pre>
           </div>
@@ -382,7 +393,7 @@ store.subscribe(providerDetails => {
         <div>
           <h2 className="font-2xl font-bold">Add to client & notifications</h2>
 
-          <div className="mt-2 mb-4 text-sm">
+          <div className="mt-2 mb-4 text-sm text-emerald-500 dark:text-emerald-400">
             Client fid {context?.client.clientFid},
             {added ? " frame added to client," : " frame not added to client,"}
             {notificationDetails
@@ -392,12 +403,12 @@ store.subscribe(providerDetails => {
 
           <div className="mb-4">
             <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg my-2">
-              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x-">
+              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
                 sdk.actions.addFrame
               </pre>
             </div>
             {addFrameResult && (
-              <div className="mb-2 text-sm">
+              <div className="mb-2 text-sm text-emerald-500 dark:text-emerald-400">
                 Add frame result: {addFrameResult}
               </div>
             )}
@@ -407,7 +418,7 @@ store.subscribe(providerDetails => {
           </div>
 
           {sendNotificationResult && (
-            <div className="mb-2 text-sm">
+            <div className="mb-2 text-sm text-emerald-500 dark:text-emerald-400">
               Send notification result: {sendNotificationResult}
             </div>
           )}
