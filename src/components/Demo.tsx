@@ -89,18 +89,6 @@ export default function Demo(
   }, [switchChain, chainId]);
 
   useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      console.log('Frame action: Received message from parent:', event.data);
-      if (event.data?.event === 'context') {
-        console.log('Frame action: Received context:', event.data.data);
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
-
-  useEffect(() => {
     const load = async () => {
       console.log("Frame action: Loading SDK context...");
       const context = await sdk.context;
@@ -151,14 +139,14 @@ export default function Demo(
       console.log("Frame action: Calling SDK ready");
       sdk.actions.ready({});
 
-// Set up a MIPD Store, and request Providers.
-const store = createStore()
+      // Set up a MIPD Store, and request Providers.
+      const store = createStore()
 
-// Subscribe to the MIPD Store.
-store.subscribe(providerDetails => {
-  console.log("PROVIDER DETAILS", providerDetails)
-  // => [EIP6963ProviderDetail, EIP6963ProviderDetail, ...]
-})
+      // Subscribe to the MIPD Store.
+      store.subscribe(providerDetails => {
+        console.log("PROVIDER DETAILS", providerDetails)
+        // => [EIP6963ProviderDetail, EIP6963ProviderDetail, ...]
+      })
 
     };
     if (sdk && !isSDKLoaded) {
