@@ -621,7 +621,7 @@ function SignIn() {
       const nonce = await getNonce();
       const result = await sdk.actions.signIn({ nonce });
       setSignInResult(result);
-
+      console.log("Frame action: Signed in with farcaster, result:", result);
       await signIn("credentials", {
         message: result.message,
         signature: result.signature,
