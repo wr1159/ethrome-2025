@@ -621,12 +621,13 @@ function SignIn() {
       const nonce = await getNonce();
       const result = await sdk.actions.signIn({ nonce });
       setSignInResult(result);
-      console.log("Frame action: Signed in with farcaster, result:", result);
+      console.log("Fragit action: Signed in with farcaster, result:", result);
       await signIn("credentials", {
         message: result.message,
         signature: result.signature,
         redirect: false,
       });
+      // TODO: Add check to authenticate the user
     } catch (e) {
       if (e instanceof SignInCore.RejectedByUser) {
         setSignInFailure("Rejected by user");
@@ -668,21 +669,21 @@ function SignIn() {
         </Button>
       }
       {session &&
-        <div className="my-2 p-2 text-xs overflow-x-scroll bg-gray-100 rounded-lg font-mono">
-          <div className="font-semibold text-gray-500 mb-1">Session</div>
-          <div className="whitespace-pre">{JSON.stringify(session, null, 2)}</div>
+        <div className="my-2 p-2 text-xs overflow-x-scroll bg-gray-100 dark:bg-gray-800 rounded-lg font-mono">
+          <div className="font-semibold text-gray-500 dark:text-gray-400 mb-1">Session</div>
+          <div className="whitespace-pre text-emerald-500 dark:text-emerald-400">{JSON.stringify(session, null, 2)}</div>
         </div>
       }
       {signInFailure && !signingIn && (
-        <div className="my-2 p-2 text-xs overflow-x-scroll bg-gray-100 rounded-lg font-mono">
-          <div className="font-semibold text-gray-500 mb-1">SIWF Result</div>
-          <div className="whitespace-pre">{signInFailure}</div>
+        <div className="my-2 p-2 text-xs overflow-x-scroll bg-gray-100 dark:bg-gray-800 rounded-lg font-mono">
+          <div className="font-semibold text-gray-500 dark:text-gray-400 mb-1">SIWF Result</div>
+          <div className="whitespace-pre text-red-500 dark:text-red-400">{signInFailure}</div>
         </div>
       )}
       {signInResult && !signingIn && (
-        <div className="my-2 p-2 text-xs overflow-x-scroll bg-gray-100 rounded-lg font-mono">
-          <div className="font-semibold text-gray-500 mb-1">SIWF Result</div>
-          <div className="whitespace-pre">{JSON.stringify(signInResult, null, 2)}</div>
+        <div className="my-2 p-2 text-xs overflow-x-scroll bg-gray-100 dark:bg-gray-800 rounded-lg font-mono">
+          <div className="font-semibold text-gray-500 dark:text-gray-400 mb-1">SIWF Result</div>
+          <div className="whitespace-pre text-emerald-500 dark:text-emerald-400">{JSON.stringify(signInResult, null, 2)}</div>
         </div>
       )}
     </>
