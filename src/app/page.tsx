@@ -5,14 +5,14 @@ const appUrl = process.env.NEXT_PUBLIC_URL;
 
 const frame = {
   version: "next",
-  imageUrl: `${appUrl}/opengraph-image`,
+  imageUrl: "https://picsum.photos/id/237/200/300",
   button: {
     title: "Launch Frame",
     action: {
       type: "launch_frame",
       name: "Farcaster Frames v2 Demo",
       url: appUrl,
-      splashImageUrl: `${appUrl}/splash.png`,
+      splashImageUrl: `https://picsum.photos/id/237/200/300`,
       splashBackgroundColor: "#f7f7f7",
     },
   },
