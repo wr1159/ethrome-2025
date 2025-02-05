@@ -89,6 +89,13 @@ export default function Demo(
   }, [switchChain, chainId]);
 
   useEffect(() => {
+    console.log("Frame action: Setting primary button");
+    sdk.actions.setPrimaryButton({
+      text: "Primary button",
+      loading: false,
+      disabled: false,
+      hidden: false,
+    });
     const load = async () => {
       console.log("Frame action: Loading SDK context...");
       const context = await sdk.context;
