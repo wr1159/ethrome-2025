@@ -171,6 +171,16 @@ export default function Demo(
     sdk.actions.openUrl("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
   }, []);
 
+  const setPrimaryButton = useCallback(() => {
+    console.log("Frame action: Setting primary button");
+    sdk.actions.setPrimaryButton({
+      text: "Primary button within frame set",
+      loading: false,
+      disabled: false,
+      hidden: false,
+    });
+  }, []);
+
   const openWarpcastUrl = useCallback(() => {
     console.log("Frame action: Opening Warpcast URL action");
     sdk.actions.openUrl("https://warpcast.com/~/compose");
@@ -354,6 +364,15 @@ export default function Demo(
               </pre>
             </div>
             <Button onClick={openWarpcastUrl}>Open Warpcast Link</Button>
+          </div>
+
+          <div className="mb-4">
+            <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg my-2">
+              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
+                sdk.actions.setPrimaryButton
+              </pre>
+            </div>
+            <Button onClick={setPrimaryButton}>Set Primary Button</Button>
           </div>
 
           <div className="mb-4">
