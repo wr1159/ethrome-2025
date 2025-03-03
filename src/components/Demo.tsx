@@ -38,6 +38,7 @@ export default function Demo(
   const [context, setContext] = useState<Context.FrameContext>();
   const [isContextOpen, setIsContextOpen] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
+  const [customUrl, setCustomUrl] = useState<string>("https://google.com");
 
   const [added, setAdded] = useState(false);
   const [notificationDetails, setNotificationDetails] =
@@ -168,8 +169,8 @@ export default function Demo(
 
   const openUrl = useCallback(() => {
     console.log("Frame action: Opening URL action");
-    sdk.actions.openUrl("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-  }, []);
+    sdk.actions.openUrl(customUrl);
+  }, [customUrl]);
 
   const setPrimaryButton = useCallback(() => {
     console.log("Frame action: Setting primary button");
@@ -353,6 +354,15 @@ export default function Demo(
               <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
                 sdk.actions.openUrl
               </pre>
+            </div>
+            <div className="mb-2">
+              <input
+                type="text"
+                value={customUrl}
+                onChange={(e) => setCustomUrl(e.target.value)}
+                className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg dark:bg-gray-800"
+                placeholder="Enter URL to open"
+              />
             </div>
             <Button onClick={openUrl}>Open Link</Button>
           </div>
