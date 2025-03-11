@@ -90,13 +90,6 @@ export default function Demo(
   }, [switchChain, chainId]);
 
   useEffect(() => {
-    console.log("Frame action: Setting primary button");
-    sdk.actions.setPrimaryButton({
-      text: "New label!!",
-      loading: false,
-      disabled: false,
-      hidden: false,
-    });
     const load = async () => {
       console.log("Frame action: Loading SDK context...");
       const context = await sdk.context;
@@ -175,7 +168,7 @@ export default function Demo(
   const setPrimaryButton = useCallback(() => {
     console.log("Frame action: Setting primary button");
     sdk.actions.setPrimaryButton({
-      text: "Primary button within frame set",
+      text: "New label set!!",
       loading: false,
       disabled: false,
       hidden: false,
