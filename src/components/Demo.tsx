@@ -92,7 +92,7 @@ export default function Demo(
   useEffect(() => {
     console.log("Frame action: Setting primary button");
     sdk.actions.setPrimaryButton({
-      text: "Primary button",
+      text: "New label!!",
       loading: false,
       disabled: false,
       hidden: false,
@@ -737,7 +737,7 @@ function ViewProfile() {
           id="view-profile-fid"
           type="number"
           value={fid}
-          className="mb-2"
+          className="mb-2 text-emerald-500 dark:text-emerald-400"
           onChange={(e) => { 
             setFid(e.target.value)
           }}
