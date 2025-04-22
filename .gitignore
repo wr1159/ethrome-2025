@@ -32,6 +32,7 @@ yarn-error.log*
 # package files
 yarn.lock
 package-lock.json
+bun.lock
 
 # env files (can opt-in for committing if needed)
 .env*
