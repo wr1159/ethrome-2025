@@ -185,6 +185,11 @@ export default function Demo(
     sdk.actions.close();
   }, []);
 
+  const composeCast = useCallback(() => {
+    console.log("Frame action: Composing cast");
+    sdk.actions.composeCast({ text: "I just learned how to compose a cast", embeds: ["https://miniapps.farcaster.xyz/docs/sdk/actions/compose-cast"] });
+  }, []);
+
   const addFrame = useCallback(async () => {
     console.log("Frame action: Adding frame...");
     try {
@@ -390,6 +395,16 @@ export default function Demo(
           <div className="mb-4">
             <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg my-2">
               <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
+                sdk.actions.composeCast
+              </pre>
+            </div>
+            <Button onClick={composeCast}>Compose Cast</Button>
+          </div>
+        </div>
+
+          <div className="mb-4">
+            <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg my-2">
+              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
                 sdk.actions.close
               </pre>
             </div>
@@ -528,7 +543,6 @@ export default function Demo(
             </>
           )}
         </div>
-      </div>
     </div>
   );
 }
