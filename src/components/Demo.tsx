@@ -3,12 +3,7 @@
 import { useEffect, useCallback, useState, useMemo } from "react";
 import { Input } from "../components/ui/input"
 import { signIn, signOut, getCsrfToken } from "next-auth/react";
-import sdk, {
-    AddFrame,
-  FrameNotificationDetails,
-  SignIn as SignInCore,
-  type Context,
-} from "@farcaster/frame-sdk";
+import sdk, { Context, FrameNotificationDetails } from "@farcaster/frame-sdk";
 import {
   useAccount,
   useSendTransaction,
@@ -29,6 +24,8 @@ import { BaseError, UserRejectedRequestError } from "viem";
 import { useSession } from "next-auth/react"
 import { createStore } from 'mipd'
 import { Label } from "~/components/ui/label";
+import { AddFrame } from "@farcaster/frame-core";
+import { SignInResult } from "@farcaster/frame-core/dist/actions/SignIn";
 
 
 export default function Demo(
@@ -39,6 +36,7 @@ export default function Demo(
   const [isContextOpen, setIsContextOpen] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [customUrl, setCustomUrl] = useState<string>("https://google.com");
+  const [castHash, setCastHash] = useState<string>("0xfb2e255124ddb549a53fb4b1afdf4fa9f3542f78");
 
   const [added, setAdded] = useState(false);
   const [notificationDetails, setNotificationDetails] =
@@ -189,6 +187,10 @@ export default function Demo(
     console.log("Frame action: Composing cast");
     sdk.actions.composeCast({ text: "I just learned how to compose a cast", embeds: ["https://miniapps.farcaster.xyz/docs/sdk/actions/compose-cast"] });
   }, []);
+
+  const handleViewCast = useCallback(() => {
+    sdk.actions.viewCast({ hash: castHash, close: false });
+  }, [castHash]);
 
   const addFrame = useCallback(async () => {
     console.log("Frame action: Adding frame...");
@@ -381,6 +383,24 @@ export default function Demo(
               </pre>
             </div>
             <Button onClick={setPrimaryButton}>Set Primary Button</Button>
+          </div>
+
+          <div className="mb-4">
+            <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg my-2">
+              <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
+                sdk.actions.viewCast
+              </pre>
+            </div>
+            <div className="mb-2">
+              <input
+                type="text"
+                value={castHash}
+                onChange={(e) => setCastHash(e.target.value)}
+                className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg dark:bg-gray-800 text-emerald-500 dark:text-emerald-400"
+                placeholder="Enter cast hash to open"
+              />
+            </div>
+            <Button onClick={handleViewCast}>View Cast</Button>
           </div>
 
           <div className="mb-4">
@@ -647,7 +667,7 @@ function SendEth() {
 function SignIn() {
   const [signingIn, setSigningIn] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
-  const [signInResult, setSignInResult] = useState<SignInCore.SignInResult>();
+  const [signInResult, setSignInResult] = useState<SignInResult>();
   const [signInFailure, setSignInFailure] = useState<string>();
   const { data: session, status } = useSession()
 
@@ -671,12 +691,7 @@ function SignIn() {
         redirect: false,
       });
       // TODO: Add check to authenticate the user
-    } catch (e) {
-      if (e instanceof SignInCore.RejectedByUser) {
-        setSignInFailure("Rejected by user");
-        return;
-      }
-
+    } catch {
       setSignInFailure("Unknown error");
     } finally {
       setSigningIn(false);
