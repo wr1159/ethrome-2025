@@ -4,10 +4,12 @@ import { useState } from "react";
 import { useFrameContext } from "~/components/providers/FrameProvider";
 import { useAccount } from "wagmi";
 import { SignInAction } from "~/components/actions/signin";
+import { QuickAuthAction } from "~/components/actions/quick-auth";
 import { OpenUrlAction } from "~/components/actions/openurl";
 import { FarcasterAction } from "~/components/actions/farcaster";
 import { ViewProfileAction } from "~/components/actions/view-profile";
 import { ViewTokenAction } from "~/components/actions/view-token";
+import { SwapTokenAction } from "~/components/actions/swap-token";
 import { ViewCastAction } from "~/components/actions/view-cast";
 import { ComposeCastAction } from "~/components/actions/compose-cast";
 import { SetPrimaryButtonAction } from "~/components/actions/set-primary-button";
@@ -87,10 +89,12 @@ export default function Demo({ title = "CBW Mini App Demo" }: DemoProps) {
         {activeTab === "actions" && (
           <div>
             <SignInAction />
+            <QuickAuthAction />
             <OpenUrlAction />
             <FarcasterAction />
             <ViewProfileAction />
             <ViewTokenAction />
+            <SwapTokenAction />
             <ViewCastAction />
             <ComposeCastAction />
             <SetPrimaryButtonAction />
