@@ -1,35 +1,37 @@
 import { Metadata } from "next";
 import App from "./app";
-
-const appUrl = process.env.NEXT_PUBLIC_URL;
+import { METADATA } from "~/lib/utils";
 
 const frame = {
   version: "next",
-  imageUrl: "https://picsum.photos/id/237/200/300",
+  imageUrl: METADATA.bannerImageUrl,
   button: {
-    title: "Launch Frame",
+    title: "Open",
     action: {
       type: "launch_frame",
-      name: "Farcaster Frames v2 Demo",
-      url: appUrl,
-      splashImageUrl: `https://picsum.photos/id/237/200/300`,
-      splashBackgroundColor: "#f7f7f7",
-    },
-  },
+      name: METADATA.name,
+      url: METADATA.homeUrl,
+      splashImageUrl: METADATA.iconImageUrl,
+      splashBackgroundColor: METADATA.splashBackgroundColor
+    }
+  }
 };
 
 export const revalidate = 300;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Farcaster Frames v2 Demo",
+    title: METADATA.name,
     openGraph: {
-      title: "Farcaster Frames v2 Demo",
-      description: "A Farcaster Frames v2 demo app.",
+      title: METADATA.name,
+      description: METADATA.description,
+      images: [METADATA.bannerImageUrl],
+      url: METADATA.homeUrl,
+      siteName: METADATA.name
     },
     other: {
       "fc:frame": JSON.stringify(frame),
-    },
+    }
   };
 }
 

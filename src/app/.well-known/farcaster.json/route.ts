@@ -1,25 +1,28 @@
-export async function GET() {
-  const appUrl = process.env.NEXT_PUBLIC_URL;
+import { METADATA } from "../../../lib/utils";
 
+export async function GET() {
   const config = {
     accountAssociation: {
       header:
-        "eyJmaWQiOjM2MjEsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHgyY2Q4NWEwOTMyNjFmNTkyNzA4MDRBNkVBNjk3Q2VBNENlQkVjYWZFIn0",
-      payload: "eyJkb21haW4iOiJmcmFtZXMtdjIudmVyY2VsLmFwcCJ9",
+        "eyJmaWQiOjYxNiwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDVFNzlGNjkwY2NENDIwMDdENUEwYUQ2NzhDRDQ3NDc0MzM5NDAwRTMifQ",
+      payload: "eyJkb21haW4iOiJmcmFtZXMtdjItZGVtby1saWxhYy52ZXJjZWwuYXBwIn0",
       signature:
-        "MHhiNDIwMzQ1MGZkNzgzYTExZjRiOTllZTFlYjA3NmMwOTdjM2JkOTY1NGM2ODZjYjkyZTAyMzk2Y2Q0YjU2MWY1MjY5NjI5ZGQ5NTliYjU0YzEwOGI4OGVmNjdjMTVlZTdjZDc2YTRiMGU5NzkzNzA3YzkxYzFkOWFjNTg0YmQzNjFi",
+        "MHgwYjI0MTFlYzNmNTc0MzdiNThmOWExZWQ4YTYwZDY0ZGE2NDU0YWNmZjM2Nzc2MWUyYTI3NTk4YjliZmJjZmIxNWY1ODU1MmU0ZTdmOWY4OTA5ZjNjYjdjZWJjY2Y3MjQ5NmIwODlmYTNhMjQ0ZDE1Mzg1MzZmMzcwY2Y0NGE0YzFi",
     },
-    frame: {
-      version: "1",
-      name: "Frames v2 Demo",
-      iconUrl: `https://picsum.photos/id/237/200/300`,
-      homeUrl: appUrl,
-      imageUrl: `https://picsum.photos/id/237/200/300`,
-      buttonTitle: "Launch Frame",
-      splashImageUrl: `https://picsum.photos/id/237/200/300`,
-      splashBackgroundColor: "#f7f7f7",
-      webhookUrl: `${appUrl}/api/webhook`,
-    },
+      "frame": {
+        "version": "1",
+        "name": METADATA.name,
+        "iconUrl": METADATA.iconImageUrl,
+        "homeUrl": METADATA.homeUrl,
+        "imageUrl": METADATA.bannerImageUrl,
+        "splashImageUrl": METADATA.iconImageUrl,
+        "splashBackgroundColor": METADATA.splashBackgroundColor,
+        "description": METADATA.description,
+        "ogTitle": METADATA.name,
+        "ogDescription": METADATA.description,
+        "ogImageUrl": METADATA.bannerImageUrl,
+        "noindex": false
+      }
   };
 
   return Response.json(config);
