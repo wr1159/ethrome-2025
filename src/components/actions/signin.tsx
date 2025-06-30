@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { signIn, signOut, getCsrfToken } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import sdk from "@farcaster/frame-sdk";
 import { SignInResult } from "@farcaster/frame-core/dist/actions/signIn";
-import { createAppClient, viemConnector } from "@farcaster/auth-client";
+import { createAppClient, generateNonce, viemConnector } from "@farcaster/auth-client";
 import { Button } from "~/components/ui/Button";
 
 export function SignInAction() {
@@ -18,7 +18,8 @@ export function SignInAction() {
   const { data: session, status } = useSession();
 
   const getNonce = useCallback(async (): Promise<string> => {
-    const nonce = await getCsrfToken();
+    // const nonce = await getCsrfToken();
+    const nonce = await generateNonce();
     if (!nonce) throw new Error("Unable to generate nonce");
     return nonce;
   }, []);
@@ -43,6 +44,7 @@ export function SignInAction() {
         signature: result.signature as `0x${string}`,
         domain: new URL(window.location.origin).hostname,
         nonce: nonce,
+        acceptAuthAddress: true
       };
       
       // Store params for debugging

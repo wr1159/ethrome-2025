@@ -51,6 +51,7 @@ export const authOptions: AuthOptions = {
           signature: credentials?.signature as `0x${string}`,
           domain: new URL(process.env.NEXTAUTH_URL ?? '').hostname,
           nonce: csrfToken,
+          acceptAuthAddress: true
         });
         const { success, fid } = verifyResponse;
 
