@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useFrameContext } from "~/components/providers/FrameProvider";
 import { useAccount } from "wagmi";
 import { SignInAction } from "~/components/actions/signin";
-import { ManualSignInAction } from "~/components/actions/manual-signin";
 import { QuickAuthAction } from "~/components/actions/quick-auth";
 import { OpenUrlAction } from "~/components/actions/openurl";
 import { FarcasterAction } from "~/components/actions/farcaster";
@@ -90,7 +89,6 @@ export default function Demo({ title = "CBW Mini App Demo" }: DemoProps) {
         {activeTab === "actions" && (
           <div>
             <SignInAction />
-            <ManualSignInAction />
             <QuickAuthAction />
             <OpenUrlAction />
             <FarcasterAction />
