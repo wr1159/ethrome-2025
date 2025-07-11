@@ -15,8 +15,10 @@ import { ComposeCastAction } from "~/components/actions/compose-cast";
 import { SetPrimaryButtonAction } from "~/components/actions/set-primary-button";
 import { CloseFrameAction } from "~/components/actions/close-frame";
 import { WalletConnect, SignMessage, SendEth, SignTypedData, SwitchChain, SendTransaction } from "~/components/wallet/WalletActions";
+import { GetChainsAction } from "~/components/actions/get-chains";
+import { GetCapabilitiesAction } from "~/components/actions/get-capabilities";
 
-type TabType = "actions" | "context" | "wallet";
+type TabType = "actions" | "context" | "wallet" | "other";
 
 interface DemoProps {
   title?: string;
@@ -82,6 +84,16 @@ export default function Demo({ title = "CBW Mini App Demo" }: DemoProps) {
               }`}
             >
               Wallet
+            </button>
+            <button
+              onClick={() => setActiveTab("other")}
+              className={`px-4 py-2 text-sm font-medium ${
+                activeTab === "other"
+                  ? "border-b-2 border-[#7C65C1] text-[#7C65C1]"
+                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+              }`}
+            >
+              Other
             </button>
           </div>
         </div>
@@ -175,6 +187,13 @@ export default function Demo({ title = "CBW Mini App Demo" }: DemoProps) {
                 </div>
               </>
             )}
+          </div>
+        )}
+
+        {activeTab === "other" && (
+          <div>
+            <GetChainsAction />
+            <GetCapabilitiesAction />
           </div>
         )}
       </div>
