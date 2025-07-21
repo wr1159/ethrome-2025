@@ -10,11 +10,12 @@ import { FarcasterAction } from "~/components/actions/farcaster";
 import { ViewProfileAction } from "~/components/actions/view-profile";
 import { ViewTokenAction } from "~/components/actions/view-token";
 import { SwapTokenAction } from "~/components/actions/swap-token";
+import { SendTokenAction } from "~/components/actions/send-token";
 import { ViewCastAction } from "~/components/actions/view-cast";
 import { ComposeCastAction } from "~/components/actions/compose-cast";
 import { SetPrimaryButtonAction } from "~/components/actions/set-primary-button";
 import { CloseFrameAction } from "~/components/actions/close-frame";
-import { WalletConnect, SignMessage, SendEth, SignTypedData, SwitchChain, SendTransaction } from "~/components/wallet/WalletActions";
+import { WalletConnect, SignMessage, SendEth, SignTypedData, SwitchChain, SendTransaction, GetEthereumProvider } from "~/components/wallet/WalletActions";
 import { GetChainsAction } from "~/components/actions/get-chains";
 import { GetCapabilitiesAction } from "~/components/actions/get-capabilities";
 
@@ -24,7 +25,7 @@ interface DemoProps {
   title?: string;
 }
 
-export default function Demo({ title = "CBW Mini App Demo" }: DemoProps) {
+export default function Demo({ title = "Base App Mini App Demo" }: DemoProps) {
   const frameContext = useFrameContext();
   const { isConnected } = useAccount();
   const [activeTab, setActiveTab] = useState<TabType>("actions");
@@ -107,6 +108,7 @@ export default function Demo({ title = "CBW Mini App Demo" }: DemoProps) {
             <ViewProfileAction />
             <ViewTokenAction />
             <SwapTokenAction />
+            <SendTokenAction />
             <ViewCastAction />
             <ComposeCastAction />
             <SetPrimaryButtonAction />
@@ -168,6 +170,9 @@ export default function Demo({ title = "CBW Mini App Demo" }: DemoProps) {
         {activeTab === "wallet" && (
           <div>
             <WalletConnect />
+            <div className="mb-4">
+              <GetEthereumProvider />
+            </div>
             <div className="mb-4">
               <SignMessage />
             </div>

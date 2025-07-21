@@ -17,6 +17,10 @@ import { Button } from "~/components/ui/Button";
 import { truncateAddress } from "~/lib/truncateAddress";
 import { base, optimism } from "wagmi/chains";
 import { BaseError, UserRejectedRequestError } from "viem";
+import sdk from "@farcaster/frame-sdk";
+
+// dylsteck.base.eth
+const RECIPIENT_ADDRESS = "0x8342A48694A74044116F330db5050a267b28dD85";
 
 const renderError = (error: Error | null): React.ReactElement | null => {
   if (!error) return null;
@@ -250,7 +254,7 @@ export function SendTransaction() {
   const sendTx = useCallback((): void => {
     sendTransaction(
       {
-        to: "0x4bBFD120d9f352A0BEd7a014bd67913a2007a878",
+        to: RECIPIENT_ADDRESS as `0x${string}`,
         data: "0x9846cd9efc000023c0",
       },
       {
@@ -281,6 +285,71 @@ export function SendTransaction() {
               : isConfirmed
               ? "Confirmed!"
               : "Pending"}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+export function GetEthereumProvider() {
+  const [providerInfo, setProviderInfo] = useState<unknown>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleGetProvider = useCallback(async (): Promise<void> => {
+    try {
+      setLoading(true);
+      setError(null);
+      const provider = await sdk.wallet.getEthereumProvider();
+      
+      if (!provider) {
+        throw new Error('Provider not available');
+      }
+      
+      // Extract provider info (avoiding circular references)
+      const providerAny = provider as Record<string, unknown>;
+      const info: Record<string, unknown> = {
+        // Basic provider properties
+        isConnected: typeof provider.request === 'function',
+        // Check for common provider properties
+        isMetaMask: providerAny.isMetaMask || false,
+        isWalletConnect: providerAny.isWalletConnect || false,
+        isFarcaster: true, // Since it's from Farcaster SDK
+      };
+      
+      // Add state if it exists
+      if (providerAny._state) {
+        info.state = providerAny._state;
+      }
+      
+      setProviderInfo(info);
+    } catch (err) {
+      setError(`Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return (
+    <>
+      <Button
+        onClick={handleGetProvider}
+        disabled={loading}
+        isLoading={loading}
+      >
+        Get Ethereum Provider
+      </Button>
+      {error && renderError(new Error(error))}
+      {providerInfo && (
+        <div className="mt-2 text-xs">
+          <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
+            <div className="font-semibold text-gray-500 dark:text-gray-400 mb-1">
+              Provider Info
+            </div>
+            <pre className="whitespace-pre-wrap break-words text-emerald-500 dark:text-emerald-400">
+              {JSON.stringify(providerInfo, null, 2)}
+            </pre>
           </div>
         </div>
       )}
