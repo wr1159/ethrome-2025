@@ -18,11 +18,15 @@ export default function FrameProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     const init = async () => {
       const context = await sdk.context;
-      const isInMiniApp = (await sdk.isInMiniApp()) ?? false;
-      setFrameContext({ context, isInMiniApp });
+      setFrameContext({ context, isInMiniApp: false });
       setTimeout(() => {
-        sdk.actions.ready()
-      }, 500)
+        sdk.actions.ready();
+      }, 500);
+      setTimeout(async () => {
+        const isInMiniApp = await sdk.isInMiniApp();
+        console.log('isInMiniApp:', isInMiniApp);
+        setFrameContext({ context, isInMiniApp });
+      }, 600);
     }
     init()
   }, [])
