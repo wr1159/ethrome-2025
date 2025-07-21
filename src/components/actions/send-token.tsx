@@ -6,7 +6,6 @@ import { Button } from "~/components/ui/Button";
 import { Label } from "~/components/ui/label";
 import { Input } from "~/components/ui/input";
 
-// dylsteck.base.eth
 const RECIPIENT_ADDRESS = "0x8342A48694A74044116F330db5050a267b28dD85";
 
 export function SendTokenAction() {

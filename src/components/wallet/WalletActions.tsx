@@ -19,7 +19,6 @@ import { base, optimism } from "wagmi/chains";
 import { BaseError, UserRejectedRequestError } from "viem";
 import sdk from "@farcaster/frame-sdk";
 
-// dylsteck.base.eth
 const RECIPIENT_ADDRESS = "0x8342A48694A74044116F330db5050a267b28dD85";
 
 const renderError = (error: Error | null): React.ReactElement | null => {
@@ -307,16 +306,33 @@ export function GetEthereumProvider() {
         throw new Error('Provider not available');
       }
       
+      // Type the provider properly
+      const typedProvider = provider as {
+        request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
+        [key: string]: unknown;
+      };
+      
       // Extract provider info (avoiding circular references)
       const providerAny = provider as Record<string, unknown>;
       const info: Record<string, unknown> = {
         // Basic provider properties
-        isConnected: typeof provider.request === 'function',
+        isConnected: typeof typedProvider.request === 'function',
         // Check for common provider properties
         isMetaMask: providerAny.isMetaMask || false,
         isWalletConnect: providerAny.isWalletConnect || false,
         isFarcaster: true, // Since it's from Farcaster SDK
       };
+      
+      // Get wallet address
+      try {
+        const accounts = await typedProvider.request({ method: 'eth_accounts' }) as string[];
+        if (accounts && accounts.length > 0) {
+          info.walletAddress = accounts[0];
+          info.walletAddressTruncated = truncateAddress(accounts[0]);
+        }
+      } catch (err) {
+        console.error('Failed to get wallet address:', err);
+      }
       
       // Add state if it exists
       if (providerAny._state) {

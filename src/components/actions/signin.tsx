@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { signIn, signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import sdk from "@farcaster/frame-sdk";
-import { SignInResult } from "@farcaster/frame-core/dist/actions/signIn";
+import { SignInResult } from "@farcaster/miniapp-core/dist/actions/SignIn";
 import { createAppClient, generateNonce, viemConnector } from "@farcaster/auth-client";
 import { Button } from "~/components/ui/Button";
 

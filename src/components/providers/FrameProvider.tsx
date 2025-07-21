@@ -4,7 +4,7 @@ import { Context, sdk } from "@farcaster/frame-sdk";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type FrameContextType = {
-  context: Context.FrameContext | null;
+  context: Context.MiniAppContext | null;
   isInMiniApp: boolean | null;
 } | null;
 
