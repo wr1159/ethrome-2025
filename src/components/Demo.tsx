@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -37,10 +38,10 @@ export default function Demo({ title = "Base App Mini App Demo" }: DemoProps) {
 
   return (
     <div style={{ 
-      paddingTop: frameContext?.context?.client.safeAreaInsets?.top ?? 0, 
-      paddingBottom: frameContext?.context?.client.safeAreaInsets?.bottom ?? 0,
-      paddingLeft: frameContext?.context?.client.safeAreaInsets?.left ?? 0,
-      paddingRight: frameContext?.context?.client.safeAreaInsets?.right ?? 0,
+      marginTop: (frameContext?.context as any)?.client?.safeAreaInsets?.top ?? 0,
+      marginBottom: (frameContext?.context as any)?.client?.safeAreaInsets?.bottom ?? 0,
+      marginLeft: (frameContext?.context as any)?.client?.safeAreaInsets?.left ?? 0,
+      marginRight: (frameContext?.context as any)?.client?.safeAreaInsets?.right ?? 0,
     }}>
       <div className="w-[300px] mx-auto py-2 px-2">
         <h1 className="text-2xl font-bold text-center mb-4">{title}</h1>
@@ -144,7 +145,7 @@ export default function Demo({ title = "Base App Mini App Demo" }: DemoProps) {
 
             {frameContext?.context && (
               <div className="space-y-3">
-                {Object.entries(frameContext.context).map(([key, value]) => (
+                {Object.entries(frameContext.context as Record<string, unknown>).map(([key, value]) => (
                   <div key={key}>
                     <h4 className="font-bold text-sm mb-1">{key}</h4>
                     <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">

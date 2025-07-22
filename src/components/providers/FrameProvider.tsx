@@ -1,11 +1,40 @@
 'use client'
 
-import { Context, sdk } from "@farcaster/frame-sdk";
+import { sdk } from "@farcaster/miniapp-sdk";
 import { createContext, useContext, useEffect, useState } from "react";
 
+interface SafeAreaInsets {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+}
+
+interface MiniAppClient {
+  platformType?: 'web' | 'mobile';
+  clientFid: number;
+  added: boolean;
+  safeAreaInsets?: SafeAreaInsets;
+  notificationDetails?: {
+    url: string;
+    token: string;
+  };
+}
+
+interface MiniAppContext {
+  user: {
+    fid: number;
+    username?: string;
+    displayName?: string;
+    pfpUrl?: string;
+  };
+  location?: Record<string, unknown>;
+  client: MiniAppClient;
+}
+
 type FrameContextType = {
-  context: Context.MiniAppContext | null;
-  isInMiniApp: boolean | null;
+  context: MiniAppContext | Record<string, unknown> | null;
+  isInMiniApp: boolean;
 } | null;
 
 const FrameContext = createContext<FrameContextType>(null);
@@ -18,15 +47,9 @@ export default function FrameProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     const init = async () => {
       const context = await sdk.context;
-      setFrameContext({ context, isInMiniApp: false });
-      setTimeout(() => {
-        sdk.actions.ready();
-      }, 500);
-      setTimeout(async () => {
-        const isInMiniApp = await sdk.isInMiniApp();
-        console.log('isInMiniApp:', isInMiniApp);
-        setFrameContext({ context, isInMiniApp });
-      }, 600);
+      const isInMiniApp = await sdk.isInMiniApp();
+      console.log('isInMiniApp:', isInMiniApp);
+      setFrameContext({ context, isInMiniApp });
     }
     init()
   }, [])
