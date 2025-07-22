@@ -7,6 +7,7 @@ import { useAccount } from "wagmi";
 import { SignInAction } from "~/components/actions/signin";
 import { QuickAuthAction } from "~/components/actions/quick-auth";
 import { OpenUrlAction } from "~/components/actions/openurl";
+import { OpenMiniAppAction } from "~/components/actions/open-miniapp";
 import { FarcasterAction } from "~/components/actions/farcaster";
 import { ViewProfileAction } from "~/components/actions/view-profile";
 import { ViewTokenAction } from "~/components/actions/view-token";
@@ -105,6 +106,7 @@ export default function Demo({ title = "Base App Mini App Demo" }: DemoProps) {
             <SignInAction />
             <QuickAuthAction />
             <OpenUrlAction />
+            <OpenMiniAppAction />
             <FarcasterAction />
             <ViewProfileAction />
             <ViewTokenAction />
