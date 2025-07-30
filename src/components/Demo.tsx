@@ -18,6 +18,7 @@ import { ComposeCastAction } from "~/components/actions/compose-cast";
 import { SetPrimaryButtonAction } from "~/components/actions/set-primary-button";
 import { CloseFrameAction } from "~/components/actions/close-frame";
 import { WalletConnect, SignMessage, SendEth, SignTypedData, SwitchChain, SendTransaction, GetEthereumProvider } from "~/components/wallet/WalletActions";
+import { BasePay } from "~/components/wallet/BasePay";
 import { GetChainsAction } from "~/components/actions/get-chains";
 import { GetCapabilitiesAction } from "~/components/actions/get-capabilities";
 
@@ -44,56 +45,56 @@ export default function Demo({ title = "Base App Mini App Demo" }: DemoProps) {
       marginLeft: (frameContext?.context as any)?.client?.safeAreaInsets?.left ?? 0,
       marginRight: (frameContext?.context as any)?.client?.safeAreaInsets?.right ?? 0,
     }}>
-      <div className="w-[300px] mx-auto py-2 px-2">
-        <h1 className="text-2xl font-bold text-center mb-4">{title}</h1>
+      <div className="w-[300px] mx-auto py-4 px-4">
+        <h1 className="text-2xl font-bold text-center mb-6 text-foreground">{title}</h1>
 
-        <div className="mb-4">
-          <h3 className="font-bold">isInMiniApp</h3>
-          <div className="p-4 mt-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-            <span className="font-mono text-xs text-emerald-500 dark:text-emerald-400">
+        <div className="mb-6">
+          <h3 className="font-semibold text-foreground mb-3">Connection Status</h3>
+          <div className="p-4 bg-muted border border-border rounded-lg">
+            <span className="font-mono text-sm text-primary font-medium">
               {frameContext ? (frameContext.isInMiniApp ?? false).toString() : 'false'}
             </span>
           </div>
         </div>
 
-        <div className="mb-4">
-          <div className="flex border-b border-gray-200 dark:border-gray-700">
+        <div className="mb-6">
+          <div className="flex border-b border-border bg-background">
             <button
               onClick={() => setActiveTab("actions")}
-              className={`px-4 py-2 text-sm font-medium ${
+              className={`px-4 py-3 text-sm font-medium transition-colors ${
                 activeTab === "actions"
-                  ? "border-b-2 border-[#7C65C1] text-[#7C65C1]"
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                  ? "border-b-2 border-primary text-primary bg-primary/5"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
             >
               Actions
             </button>
             <button
               onClick={() => setActiveTab("context")}
-              className={`px-4 py-2 text-sm font-medium ${
+              className={`px-4 py-3 text-sm font-medium transition-colors ${
                 activeTab === "context"
-                  ? "border-b-2 border-[#7C65C1] text-[#7C65C1]"
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                  ? "border-b-2 border-primary text-primary bg-primary/5"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
             >
               Context
             </button>
             <button
               onClick={() => setActiveTab("wallet")}
-              className={`px-4 py-2 text-sm font-medium ${
+              className={`px-4 py-3 text-sm font-medium transition-colors ${
                 activeTab === "wallet"
-                  ? "border-b-2 border-[#7C65C1] text-[#7C65C1]"
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                  ? "border-b-2 border-primary text-primary bg-primary/5"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
             >
               Wallet
             </button>
             <button
               onClick={() => setActiveTab("other")}
-              className={`px-4 py-2 text-sm font-medium ${
+              className={`px-4 py-3 text-sm font-medium transition-colors ${
                 activeTab === "other"
-                  ? "border-b-2 border-[#7C65C1] text-[#7C65C1]"
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                  ? "border-b-2 border-primary text-primary bg-primary/5"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               }`}
             >
               Other
@@ -137,8 +138,8 @@ export default function Demo({ title = "Base App Mini App Demo" }: DemoProps) {
               </button>
 
               {isFullObjectOpen && (
-                <div className="p-4 mt-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                  <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-emerald-500 dark:text-emerald-400">
+                <div className="p-4 mt-2 bg-muted border border-border rounded-lg">
+                  <pre className="font-mono text-xs whitespace-pre-wrap break-words max-w-[260px] overflow-x- text-primary">
                     {frameContext?.context ? JSON.stringify(frameContext.context, null, 2) : 'null'}
                   </pre>
                 </div>
@@ -149,9 +150,9 @@ export default function Demo({ title = "Base App Mini App Demo" }: DemoProps) {
               <div className="space-y-3">
                 {Object.entries(frameContext.context as Record<string, unknown>).map(([key, value]) => (
                   <div key={key}>
-                    <h4 className="font-bold text-sm mb-1">{key}</h4>
-                    <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                      <pre className="font-mono text-xs text-emerald-500 dark:text-emerald-400 whitespace-pre-wrap break-words">
+                    <h4 className="font-semibold text-sm mb-2 text-foreground">{key}</h4>
+                    <div className="p-3 bg-muted border border-border rounded-lg">
+                      <pre className="font-mono text-xs text-primary whitespace-pre-wrap break-words">
                         {typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
                       </pre>
                     </div>
@@ -161,8 +162,8 @@ export default function Demo({ title = "Base App Mini App Demo" }: DemoProps) {
             )}
 
             {!frameContext?.context && (
-              <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <span className="font-mono text-xs text-emerald-500 dark:text-emerald-400">
+              <div className="p-4 bg-muted border border-border rounded-lg">
+                <span className="font-mono text-xs text-muted-foreground">
                   ⚠️ No context data available
                 </span>
               </div>
@@ -172,6 +173,7 @@ export default function Demo({ title = "Base App Mini App Demo" }: DemoProps) {
 
         {activeTab === "wallet" && (
           <div>
+            <BasePay />
             <WalletConnect />
             <div className="mb-4">
               <GetEthereumProvider />

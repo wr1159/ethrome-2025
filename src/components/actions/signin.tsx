@@ -80,8 +80,8 @@ export function SignInAction() {
 
   return (
     <div className="mb-4">
-      <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg my-2">
-        <pre className="font-mono text-xs text-emerald-500 dark:text-emerald-400">sdk.actions.signIn</pre>
+      <div className="p-3 bg-muted border border-border rounded-lg my-2">
+        <pre className="font-mono text-xs text-primary font-medium">sdk.actions.signIn</pre>
       </div>
       {status !== "authenticated" && (
         <Button onClick={handleSignIn} disabled={signingIn}>
@@ -94,47 +94,47 @@ export function SignInAction() {
         </Button>
       )}
       {signInFailure && !signingIn && (
-        <div className="my-2 p-2 text-xs overflow-x-scroll bg-gray-100 dark:bg-gray-800 rounded-lg font-mono">
-          <div className="font-semibold text-gray-500 dark:text-gray-400 mb-1">SIWF Error</div>
-          <div className="whitespace-pre text-red-500 dark:text-red-400">{signInFailure}</div>
+        <div className="my-2 p-3 text-xs overflow-x-scroll bg-muted border border-border rounded-lg font-mono">
+          <div className="font-semibold text-muted-foreground mb-1">SIWF Error</div>
+          <div className="whitespace-pre text-destructive">{signInFailure}</div>
         </div>
       )}
       {verifyParams !== undefined && !signingIn && (
         <div className="my-2">
           {session?.user?.fid && (
-            <div className="mb-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
-              <span className="text-sm font-medium text-blue-900 dark:text-blue-100">User ID: {session.user.fid}</span>
+            <div className="mb-2 p-3 bg-primary/10 rounded border border-primary/20">
+              <span className="text-sm font-medium text-primary">User ID: {session.user.fid}</span>
             </div>
           )}
-          <div className="p-2 text-xs overflow-x-scroll bg-gray-100 dark:bg-gray-800 rounded-lg font-mono">
-            <div className="font-semibold text-gray-500 dark:text-gray-400 mb-1">Verify Params</div>
-            <div className="whitespace-pre text-emerald-500 dark:text-emerald-400">{verifyParams ? JSON.stringify(verifyParams, null, 2) : 'No data'}</div>
+          <div className="p-3 text-xs overflow-x-scroll bg-muted border border-border rounded-lg font-mono">
+            <div className="font-semibold text-muted-foreground mb-1">Verify Params</div>
+            <div className="whitespace-pre text-primary">{verifyParams ? JSON.stringify(verifyParams, null, 2) : 'No data'}</div>
           </div>
         </div>
       )}
       {verifyResponse !== undefined && !signingIn && (
         <div className="my-2">
           {session?.user?.fid && (
-            <div className="mb-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
-              <span className="text-sm font-medium text-blue-900 dark:text-blue-100">User ID: {session.user.fid}</span>
+            <div className="mb-2 p-3 bg-primary/10 rounded border border-primary/20">
+              <span className="text-sm font-medium text-primary">User ID: {session.user.fid}</span>
             </div>
           )}
-          <div className="p-2 text-xs overflow-x-scroll bg-gray-100 dark:bg-gray-800 rounded-lg font-mono">
-            <div className="font-semibold text-gray-500 dark:text-gray-400 mb-1">Verify Response</div>
-            <div className="whitespace-pre text-emerald-500 dark:text-emerald-400">{verifyResponse ? JSON.stringify(verifyResponse, null, 2) : 'No data'}</div>
+          <div className="p-3 text-xs overflow-x-scroll bg-muted border border-border rounded-lg font-mono">
+            <div className="font-semibold text-muted-foreground mb-1">Verify Response</div>
+            <div className="whitespace-pre text-primary">{verifyResponse ? JSON.stringify(verifyResponse, null, 2) : 'No data'}</div>
           </div>
         </div>
       )}
       {signInResult && !signingIn && (
         <div className="my-2">
           {session?.user?.fid && (
-            <div className="mb-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
-              <span className="text-sm font-medium text-blue-900 dark:text-blue-100">User ID: {session.user.fid}</span>
+            <div className="mb-2 p-3 bg-primary/10 rounded border border-primary/20">
+              <span className="text-sm font-medium text-primary">User ID: {session.user.fid}</span>
             </div>
           )}
-          <div className="p-2 text-xs overflow-x-scroll bg-gray-100 dark:bg-gray-800 rounded-lg font-mono">
-            <div className="font-semibold text-gray-500 dark:text-gray-400 mb-1">SIWF Result</div>
-            <div className="whitespace-pre text-emerald-500 dark:text-emerald-400">{JSON.stringify(signInResult, null, 2)}</div>
+          <div className="p-3 text-xs overflow-x-scroll bg-muted border border-border rounded-lg font-mono">
+            <div className="font-semibold text-muted-foreground mb-1">SIWF Result</div>
+            <div className="whitespace-pre text-primary">{JSON.stringify(signInResult, null, 2)}</div>
           </div>
         </div>
       )}
