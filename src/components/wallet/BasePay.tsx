@@ -18,7 +18,8 @@ export function BasePay() {
   const [paymentResult, setPaymentResult] = useState<string | null>(null);
   const [amount, setAmount] = useState("5.00");
   
-  const recipient = "dylsteck.base.eth";
+  // dylsteck.base.eth
+  const recipient = "0x8342A48694A74044116F330db5050a267b28dD85";
 
   const handlePay = async () => {
     try {
@@ -32,6 +33,7 @@ export function BasePay() {
       });
 
       const payResult = result as PayResult;
+      console.log('pay result', payResult);
       const transactionId = payResult?.id || payResult?.transactionId || 'unknown';
       setPaymentResult(`Payment initiated! Transaction ID: ${transactionId}`);
 

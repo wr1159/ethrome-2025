@@ -21,7 +21,28 @@ export async function GET() {
         "ogTitle": METADATA.name,
         "ogDescription": METADATA.description,
         "ogImageUrl": METADATA.bannerImageUrl,
-        "noindex": false
+        "requiredCapabilities": [
+          "actions.ready",
+          "actions.signIn", 
+          "actions.openMiniApp",
+          "actions.openUrl",
+          "actions.sendToken",
+          "actions.viewToken", 
+          "actions.composeCast",
+          "actions.viewProfile",
+          "actions.setPrimaryButton",
+          "actions.swapToken",
+          "actions.close",
+          "actions.viewCast",
+          "wallet.getEthereumProvider"
+        ],
+        "requiredChains": [
+          "eip155:8453",
+          "eip155:10"
+        ],
+        "canonicalDomain": "frames-v2-demo-lilac.vercel.app",
+        "noindex": false,
+        "tags": ["base", "baseapp", "miniapp", "demo", "basepay"]
       }
   };
 

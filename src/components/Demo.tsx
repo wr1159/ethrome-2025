@@ -3,6 +3,7 @@
 
 import React, { useState } from "react";
 import { useFrameContext } from "~/components/providers/FrameProvider";
+import { sdk } from "@farcaster/miniapp-sdk";
 import { useAccount } from "wagmi";
 import { SignInAction } from "~/components/actions/signin";
 import { QuickAuthAction } from "~/components/actions/quick-auth";
@@ -21,11 +22,19 @@ import { BasePay } from "~/components/wallet/BasePay";
 import { GetChainsAction } from "~/components/actions/get-chains";
 import { GetCapabilitiesAction } from "~/components/actions/get-capabilities";
 
-type TabType = "actions" | "context" | "wallet" | "other";
-type ActionPageType = "list" | "signin" | "quickauth" | "openurl" | "openminiapp" | "farcaster" | "viewprofile" | "viewtoken" | "swaptoken" | "sendtoken" | "viewcast" | "composecast" | "setprimarybutton" | "closeframe";
+type TabType = "actions" | "context" | "wallet";
+type ActionPageType = "list" | "signin" | "quickauth" | "openurl" | "openminiapp" | "farcaster" | "viewprofile" | "viewtoken" | "swaptoken" | "sendtoken" | "viewcast" | "composecast" | "setprimarybutton" | "closeframe" | "runtime";
+type WalletPageType = "list" | "basepay" | "wallet";
 
 interface ActionDefinition {
   id: ActionPageType;
+  name: string;
+  description: string;
+  component: React.ComponentType;
+}
+
+interface WalletActionDefinition {
+  id: WalletPageType;
   name: string;
   description: string;
   component: React.ComponentType;
@@ -36,6 +45,7 @@ export default function Demo() {
   const { isConnected } = useAccount();
   const [activeTab, setActiveTab] = useState<TabType>("actions");
   const [currentActionPage, setCurrentActionPage] = useState<ActionPageType>("list");
+  const [currentWalletPage, setCurrentWalletPage] = useState<WalletPageType>("list");
   const [isFullObjectOpen, setIsFullObjectOpen] = useState<boolean>(false);
 
   const toggleFullObject = (): void => {
@@ -55,12 +65,31 @@ export default function Demo() {
     { id: "composecast", name: "Compose Cast", description: "Create new casts", component: ComposeCastAction },
     { id: "setprimarybutton", name: "Set Primary Button", description: "Configure primary button", component: SetPrimaryButtonAction },
     { id: "closeframe", name: "Close Frame", description: "Close the current frame", component: CloseFrameAction },
+    { id: "runtime", name: "Runtime Detection", description: "Get chains and capabilities", component: () => null },
+  ];
+
+  const WalletActionsComponent = () => (
+    <div className="space-y-4">
+      <GetEthereumProvider />
+      <SignMessage />
+      <SendEth />
+      <SendTransaction />
+      <SignTypedData />
+      <SwitchChain />
+    </div>
+  );
+
+  const walletActionDefinitions: WalletActionDefinition[] = [
+    { id: "basepay", name: "Base Pay", description: "Debug Base Pay", component: BasePay },
+    { id: "wallet", name: "Wallet", description: "Debug wallet interactions", component: WalletActionsComponent },
   ];
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
     if (tab === "actions") {
       setCurrentActionPage("list");
+    } else if (tab === "wallet") {
+      setCurrentWalletPage("list");
     }
   };
 
@@ -72,6 +101,14 @@ export default function Demo() {
     setCurrentActionPage("list");
   };
 
+  const handleWalletActionSelect = (walletActionId: WalletPageType) => {
+    setCurrentWalletPage(walletActionId);
+  };
+
+  const handleBackToWalletList = () => {
+    setCurrentWalletPage("list");
+  };
+
   return (
     <div style={{ 
       marginTop: (frameContext?.context as any)?.client?.safeAreaInsets?.top ?? 0,
@@ -80,20 +117,35 @@ export default function Demo() {
       marginRight: (frameContext?.context as any)?.client?.safeAreaInsets?.right ?? 0,
     }}>
       <div className="w-[95%] max-w-lg mx-auto py-4 px-4">
-        <div className="mb-6 mt-3">
+        <div className="mb-6 mt-3 flex items-center justify-between">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src="/base-logo.png" 
             alt="Base" 
             className="h-8 object-contain"
           />
+          
+          {/* Profile picture - only show if context data is available */}
+          {frameContext?.context && (frameContext.context as any)?.user?.pfpUrl && (
+            <button
+              onClick={() => sdk.actions.viewProfile({ fid: (frameContext.context as any).user.fid })}
+              className="flex-shrink-0"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={(frameContext.context as any).user.pfpUrl}
+                alt="Profile"
+                className="h-8 w-8 rounded-full object-cover"
+              />
+            </button>
+          )}
         </div>
 
         <div className="mb-6 mt-4">
           <div className="flex gap-2 p-1 bg-white border border-border rounded-lg">
               <button
                 onClick={() => handleTabChange("actions")}
-                className={`px-4 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap ${
+                className={`flex-1 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap ${
                   activeTab === "actions"
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground hover:bg-background"
@@ -103,7 +155,7 @@ export default function Demo() {
               </button>
               <button
                 onClick={() => handleTabChange("context")}
-                className={`px-4 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap ${
+                className={`flex-1 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap ${
                   activeTab === "context"
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground hover:bg-background"
@@ -113,7 +165,7 @@ export default function Demo() {
               </button>
               <button
                 onClick={() => handleTabChange("wallet")}
-                className={`px-4 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap ${
+                className={`flex-1 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap ${
                   activeTab === "wallet"
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground hover:bg-background"
@@ -121,16 +173,7 @@ export default function Demo() {
               >
                 Wallet
               </button>
-              <button
-                onClick={() => handleTabChange("other")}
-                className={`px-4 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap ${
-                  activeTab === "other"
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground hover:bg-background"
-                }`}
-              >
-                Other
-              </button>
+
           </div>
         </div>
 
@@ -165,10 +208,17 @@ export default function Demo() {
                   </h2>
                 </div>
                 <div className="border border-border rounded-lg p-4 bg-white">
-                  {(() => {
-                    const ActionComponent = actionDefinitions.find(a => a.id === currentActionPage)?.component;
-                    return ActionComponent ? <ActionComponent /> : null;
-                  })()}
+                  {currentActionPage === "runtime" ? (
+                    <div className="space-y-4">
+                      <GetChainsAction />
+                      <GetCapabilitiesAction />
+                    </div>
+                  ) : (
+                    (() => {
+                      const ActionComponent = actionDefinitions.find(a => a.id === currentActionPage)?.component;
+                      return ActionComponent ? <ActionComponent /> : null;
+                    })()
+                  )}
                 </div>
               </div>
             )}
@@ -177,15 +227,6 @@ export default function Demo() {
 
         {activeTab === "context" && (
           <div>
-            <div className="mb-6">
-              <h3 className="font-semibold text-foreground mb-3">isInMiniApp</h3>
-              <div className="p-4 bg-white border border-border rounded-lg">
-                <span className="font-mono text-sm text-primary font-medium">
-                  {frameContext ? (frameContext.isInMiniApp ?? false).toString() : 'false'}
-                </span>
-              </div>
-            </div>
-            
             <div className="mb-4">
               <button
                 onClick={toggleFullObject}
@@ -208,6 +249,14 @@ export default function Demo() {
                   </pre>
                 </div>
               )}
+            </div>
+            <div className="mb-6">
+              <h3 className="font-semibold text-foreground mb-3">isInMiniApp</h3>
+              <div className="p-4 bg-white border border-border rounded-lg">
+                <span className="font-mono text-sm text-primary font-medium">
+                  {frameContext ? (frameContext.isInMiniApp ?? false).toString() : 'false'}
+                </span>
+              </div>
             </div>
 
             {frameContext?.context && (
@@ -236,40 +285,71 @@ export default function Demo() {
         )}
 
         {activeTab === "wallet" && (
-          <div>
-            <BasePay />
-            <WalletConnect />
-            <div className="mb-4">
-              <GetEthereumProvider />
-            </div>
-            <div className="mb-4">
-              <SignMessage />
-            </div>
-            {isConnected && (
-              <>
-                <div className="mb-4">
-                  <SendEth />
+          <div className="space-y-4">
+            {!isConnected ? (
+              <div className="text-center py-8">
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Connect Your Wallet</h3>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    Connect your wallet to access all features
+                  </p>
                 </div>
-                <div className="mb-4">
-                  <SendTransaction />
-                </div>
-                <div className="mb-4">
-                  <SignTypedData />
-                </div>
-                <div className="mb-4">
-                  <SwitchChain />
-                </div>
-              </>
+                <WalletConnect />
+              </div>
+            ) : (
+              <div>
+                {currentWalletPage === "list" ? (
+                  <div className="space-y-4">
+                    {/* Connection Status */}
+                    <WalletConnect />
+                    
+                    {/* Wallet Action Cells */}
+                    <div className="space-y-2">
+                      {walletActionDefinitions.map((walletAction) => (
+                        <button
+                          key={walletAction.id}
+                          onClick={() => handleWalletActionSelect(walletAction.id)}
+                          className="w-full px-4 py-3 text-left bg-white border border-border rounded-xl hover:bg-blue-50 hover:border-blue-200 transition-all duration-200"
+                        >
+                          <div>
+                            <h3 className="font-normal text-foreground">{walletAction.name}</h3>
+                            <p className="text-sm text-muted-foreground mt-1">{walletAction.description}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <button
+                        onClick={handleBackToWalletList}
+                        className="p-2 hover:bg-blue-50 rounded-md transition-colors"
+                      >
+                        <span className="text-muted-foreground">←</span>
+                      </button>
+                      <h2 className="font-semibold text-foreground">
+                        {walletActionDefinitions.find(a => a.id === currentWalletPage)?.name}
+                      </h2>
+                    </div>
+                    <div className="border border-border rounded-lg p-4 bg-white">
+                      {(() => {
+                        const walletAction = walletActionDefinitions.find(a => a.id === currentWalletPage);
+                        if (walletAction) {
+                          const Component = walletAction.component;
+                          return <Component />;
+                        }
+                        return null;
+                      })()}
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         )}
 
-        {activeTab === "other" && (
-          <div>
-            <GetChainsAction />
-            <GetCapabilitiesAction />
-          </div>
-        )}
+
       </div>
     </div>
   );

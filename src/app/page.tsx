@@ -31,6 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     other: {
       "fc:frame": JSON.stringify(frame),
+      "fc:miniapp": JSON.stringify(frame),
     }
   };
 }

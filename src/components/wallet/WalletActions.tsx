@@ -38,24 +38,12 @@ const renderError = (error: Error | null): React.ReactElement | null => {
 
 export function WalletConnect() {
   const { address, isConnected } = useAccount();
-  const chainId = useChainId();
   const { disconnect } = useDisconnect();
+  const chainId = useChainId();
   const { connect } = useConnect();
 
   return (
     <>
-      {address && (
-        <div className="my-2 text-xs">
-          Address: <pre className="inline">{truncateAddress(address)}</pre>
-        </div>
-      )}
-
-      {chainId && (
-        <div className="my-2 text-xs">
-          Chain ID: <pre className="inline">{chainId}</pre>
-        </div>
-      )}
-
       <div className="mb-4">
         <Button
           onClick={() =>
@@ -63,10 +51,26 @@ export function WalletConnect() {
               ? disconnect()
               : connect({ connector: config.connectors[0] })
           }
+          className="w-full"
         >
           {isConnected ? "Disconnect" : "Connect"}
         </Button>
       </div>
+
+      {isConnected && address && chainId && (
+        <div className="mt-4 p-4 bg-white border border-border rounded-xl">
+          <div className="flex justify-between items-center text-sm">
+            <div>
+              <span className="text-muted-foreground">Address:</span>
+              <div className="font-mono text-foreground mt-1">{truncateAddress(address)}</div>
+            </div>
+            <div className="text-right">
+              <span className="text-muted-foreground">Chain:</span>
+              <div className="font-mono text-foreground mt-1">{chainId}</div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
