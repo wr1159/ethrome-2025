@@ -1,5 +1,6 @@
 import { createConfig, http, WagmiProvider } from "wagmi";
 import { base, optimism } from "wagmi/chains";
+import { baseAccount } from "wagmi/connectors";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { farcasterMiniApp } from "@farcaster/miniapp-wagmi-connector";
 
@@ -9,7 +10,7 @@ export const config = createConfig({
     [base.id]: http(),
     [optimism.id]: http(),
   },
-  connectors: [farcasterMiniApp()],
+  connectors: [farcasterMiniApp(), baseAccount()],
 });
 
 const queryClient = new QueryClient();
