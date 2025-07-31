@@ -1,8 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { Session } from "next-auth"
-import { SessionProvider } from "next-auth/react"
+
 import FrameProvider from "~/components/providers/FrameProvider";
 
 
@@ -20,15 +19,13 @@ const ErudaProvider = dynamic(
   }
 );
 
-export function Providers({ session, children }: { session: Session | null, children: React.ReactNode }) {
+export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider session={session}>
-      <WagmiProvider>
-        <FrameProvider>
-          <ErudaProvider />
-          {children}
-        </FrameProvider>
-      </WagmiProvider>
-    </SessionProvider>
+    <WagmiProvider>
+      <FrameProvider>
+        <ErudaProvider />
+        {children}
+      </FrameProvider>
+    </WagmiProvider>
   );
 }
