@@ -18,8 +18,16 @@ import { truncateAddress } from "~/lib/truncateAddress";
 import { base, optimism } from "wagmi/chains";
 import { BaseError, UserRejectedRequestError } from "viem";
 import { sdk } from "@farcaster/miniapp-sdk";
+import { SignInWithBaseButton } from "@base-org/account-ui/react";
+import { createBaseAccountSDK } from "@base-org/account";
+import { METADATA } from "~/lib/utils";
 
 const RECIPIENT_ADDRESS = "0x8342A48694A74044116F330db5050a267b28dD85";
+
+// Initialize Base Account SDK
+const baseAccountSDK = createBaseAccountSDK({
+  appName: METADATA.name,
+});
 
 const renderError = (error: Error | null): React.ReactElement | null => {
   if (!error) return null;
@@ -41,6 +49,16 @@ export function WalletConnect() {
   const { disconnect } = useDisconnect();
   const chainId = useChainId();
   const { connect } = useConnect();
+  const [baseSignedIn, setBaseSignedIn] = useState(false);
+
+  const handleBaseSignIn = async () => {
+    try {
+      await baseAccountSDK.getProvider().request({ method: 'wallet_connect' });
+      setBaseSignedIn(true);
+    } catch (error) {
+      console.error('Base sign in failed:', error);
+    }
+  };
 
   return (
     <>
@@ -55,6 +73,21 @@ export function WalletConnect() {
         >
           {isConnected ? "Disconnect" : "Connect"}
         </Button>
+      </div>
+
+      {/* Base Account Sign In Button */}
+      <div className="mb-4">
+        <SignInWithBaseButton 
+          align="center"
+          variant="solid"
+          colorScheme="light"
+          onClick={handleBaseSignIn}
+        />
+        {baseSignedIn && (
+          <div className="mt-2 text-center text-sm text-green-600">
+            ✅ Connected to Base Account
+          </div>
+        )}
       </div>
 
       {isConnected && address && chainId && (
