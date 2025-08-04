@@ -62,7 +62,7 @@ export function ComposeCastAction() {
       if (parentHash.trim()) {
         params.parent = { type: 'cast', hash: parentHash.trim() };
       }
-      
+
       const castResult = await sdk.actions.composeCast(params);
       setResult(castResult);
     } catch (err) {
