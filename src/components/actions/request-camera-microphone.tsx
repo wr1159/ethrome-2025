@@ -1,63 +1,51 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { sdk } from "@farcaster/miniapp-sdk";
 import { Button } from "~/components/ui/Button";
 
 export function RequestCameraMicrophoneAction() {
   const [loading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<string | undefined>(undefined);
-  const [error, setError] = useState<string | undefined>(undefined);
-  const [permissionStatus, setPermissionStatus] = useState<string>("unknown");
 
-  const checkFeatureSupport = useCallback(async (): Promise<void> => {
+  const [hasContext, setHasContext] = useState<boolean>(false);
+  const [hasPermissions, setHasPermissions] = useState<boolean>(false);
+
+  const checkContext = useCallback(async (): Promise<void> => {
     try {
       const context = await sdk.context;
-      const isSupported = context.features?.cameraAndMicrophoneAccess;
-      if (isSupported) {
-        setPermissionStatus("Feature supported - permissions granted");
-      } else {
-        setPermissionStatus("Feature not supported or permissions not granted");
-      }
+      const contextExists = !!context;
+      const permissionsGranted = context && context.features && context.features.cameraAndMicrophoneAccess;
+      
+      setHasContext(contextExists);
+      setHasPermissions(!!permissionsGranted);
     } catch (err) {
-      console.error("Feature check error:", err);
-      setPermissionStatus("Error checking feature support");
+      console.error("Context check error:", err);
+      setHasContext(false);
+      setHasPermissions(false);
     }
   }, []);
 
   const handleRequestAccess = useCallback(async (): Promise<void> => {
     try {
       setLoading(true);
-      setError(undefined);
       setResult(undefined);
       
       await sdk.actions.requestCameraAndMicrophoneAccess();
-      setResult("Camera and microphone access granted! You can now use camera/microphone features.");
+      setResult("Camera and microphone access granted!");
       
-      // Update permission status after successful grant
-      await checkFeatureSupport();
+      // Update context after successful grant
+      await checkContext();
     } catch (err) {
       console.error("Request camera/microphone access error:", err);
-      if (err instanceof Error) {
-        if (err.message.includes('denied') || err.message.includes('NotAllowedError')) {
-          setError("Camera and microphone access denied by user");
-        } else if (err.message.includes('not supported')) {
-          setError("Camera and microphone access is not supported on this platform");
-        } else {
-          setError(`Error: ${err.message}`);
-        }
-      } else {
-        setError("Unknown error occurred");
-      }
     } finally {
       setLoading(false);
     }
-  }, [checkFeatureSupport]);
+  }, [checkContext]);
 
   const testMediaAccess = useCallback(async (): Promise<void> => {
     try {
       setLoading(true);
-      setError(undefined);
       setResult(undefined);
 
       // Test if we can actually access getUserMedia after permissions
@@ -69,29 +57,18 @@ export function RequestCameraMicrophoneAction() {
       // Stop the stream immediately since we're just testing
       stream.getTracks().forEach(track => track.stop());
       
-      setResult("Successfully accessed camera and microphone! Media stream created and closed.");
+      setResult("Successfully accessed camera and microphone!");
     } catch (err) {
       console.error("Media access test error:", err);
-      if (err instanceof Error) {
-        if (err.name === 'NotAllowedError') {
-          setError("Media access denied. Please grant camera and microphone permissions first.");
-        } else if (err.name === 'NotFoundError') {
-          setError("Camera or microphone not found on this device.");
-        } else {
-          setError(`Media access error: ${err.message}`);
-        }
-      } else {
-        setError("Unknown media access error");
-      }
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Check feature support on component mount
-  useState(() => {
-    checkFeatureSupport();
-  });
+  // Check context on component mount
+  useEffect(() => {
+    checkContext();
+  }, [checkContext]);
 
   return (
     <div className="space-y-4">
@@ -107,31 +84,27 @@ export function RequestCameraMicrophoneAction() {
           Permission Status
         </div>
         <div className="text-xs text-blue-700 dark:text-blue-300">
-          {permissionStatus}
+          {hasPermissions ? "Feature supported - permissions granted" : "Feature not supported or permissions not granted"}
         </div>
       </div>
 
       {/* Action Buttons */}
       <div className="space-y-2">
-        <Button onClick={handleRequestAccess} disabled={loading} className="w-full">
-          {loading ? "Requesting Access..." : "Request Camera & Microphone Access"}
-        </Button>
+        {hasContext && (
+          <Button onClick={handleRequestAccess} disabled={loading} className="w-full">
+            {loading ? "Requesting Access..." : "Request Camera & Microphone Access"}
+          </Button>
+        )}
         
-        <Button 
-          onClick={testMediaAccess} 
-          disabled={loading}
-          className="w-full"
-        >
-          {loading ? "Testing..." : "Test Media Access"}
-        </Button>
-
-        <Button 
-          onClick={checkFeatureSupport} 
-          disabled={loading}
-          className="w-full"
-        >
-          Check Feature Support
-        </Button>
+        {hasPermissions && (
+          <Button 
+            onClick={testMediaAccess} 
+            disabled={loading}
+            className="w-full"
+          >
+            {loading ? "Testing..." : "Test Media Access"}
+          </Button>
+        )}
       </div>
 
       {/* Platform Support Info */}
@@ -146,17 +119,7 @@ export function RequestCameraMicrophoneAction() {
         </div>
       </div>
 
-      {/* Error Display */}
-      {error && !loading && (
-        <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-          <div className="text-sm font-medium text-red-900 dark:text-red-100 mb-1">
-            Error
-          </div>
-          <div className="text-xs text-red-700 dark:text-red-300 whitespace-pre-wrap">
-            {error}
-          </div>
-        </div>
-      )}
+
 
       {/* Success Display */}
       {result && !loading && (
@@ -170,22 +133,7 @@ export function RequestCameraMicrophoneAction() {
         </div>
       )}
 
-      {/* Usage Example */}
-      <div className="p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800">
-        <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
-          Usage Example
-        </div>
-        <pre className="text-xs text-gray-600 dark:text-gray-400 whitespace-pre-wrap overflow-x-auto">
-{`// After permissions are granted:
-const stream = await navigator.mediaDevices.getUserMedia({
-  video: true,
-  audio: true
-});
 
-// Use stream for video recording, calls, etc.
-videoElement.srcObject = stream;`}
-        </pre>
-      </div>
     </div>
   );
 }
