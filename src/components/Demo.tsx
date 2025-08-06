@@ -21,10 +21,10 @@ import { WalletConnect, SignMessage, SendEth, SignTypedData, SwitchChain, SendTr
 import { BasePay } from "~/components/wallet/BasePay";
 import { GetChainsAction } from "~/components/actions/get-chains";
 import { GetCapabilitiesAction } from "~/components/actions/get-capabilities";
-import { RequestCameraMicrophoneAction } from "~/components/actions/request-camera-microphone";
+
 
 type TabType = "actions" | "context" | "wallet";
-type ActionPageType = "list" | "signin" | "quickauth" | "openurl" | "openminiapp" | "farcaster" | "viewprofile" | "viewtoken" | "swaptoken" | "sendtoken" | "viewcast" | "composecast" | "setprimarybutton" | "closeframe" | "requestcameramicrophone" | "runtime";
+type ActionPageType = "list" | "signin" | "quickauth" | "openurl" | "openminiapp" | "farcaster" | "viewprofile" | "viewtoken" | "swaptoken" | "sendtoken" | "viewcast" | "composecast" | "setprimarybutton" | "closeframe" | "runtime";
 type WalletPageType = "list" | "basepay" | "wallet";
 
 interface ActionDefinition {
@@ -66,7 +66,6 @@ export default function Demo() {
     { id: "composecast", name: "Compose Cast", description: "Create new casts", component: ComposeCastAction },
     { id: "setprimarybutton", name: "Set Primary Button", description: "Configure primary button", component: SetPrimaryButtonAction },
     { id: "closeframe", name: "Close Frame", description: "Close the current frame", component: CloseFrameAction },
-    { id: "requestcameramicrophone", name: "Camera & Microphone", description: "Request camera and microphone access", component: RequestCameraMicrophoneAction },
     { id: "runtime", name: "Runtime Detection", description: "Get chains and capabilities", component: () => null },
   ];
 
