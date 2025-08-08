@@ -9,7 +9,6 @@ import { Button } from "~/components/ui/Button";
 
 export function SignInAction() {
   const [signingIn, setSigningIn] = useState<boolean>(false);
-  const [signingOut, setSigningOut] = useState<boolean>(false);
   const [signInResult, setSignInResult] = useState<SignInResult | undefined>(undefined);
   const [signInFailure, setSignInFailure] = useState<string | undefined>(undefined);
   const [verifyResponse, setVerifyResponse] = useState<unknown>(undefined);
@@ -26,6 +25,8 @@ export function SignInAction() {
   const handleSignIn = useCallback(async (): Promise<void> => {
     try {
       setSigningIn(true);
+      // Reset all existing state
+      setSignInResult(undefined);
       setSignInFailure(undefined);
       setVerifyResponse(undefined);
       setVerifyParams(undefined);
@@ -61,33 +62,16 @@ export function SignInAction() {
     }
   }, [getNonce]);
 
-  const handleSignOut = useCallback(async (): Promise<void> => {
-    try {
-      setSigningOut(true);
 
-      setSignInResult(undefined);
-      setVerifyResponse(undefined);
-      setVerifyParams(undefined);
-    } finally {
-      setSigningOut(false);
-    }
-  }, []);
 
   return (
     <div className="mb-4">
       <div className="p-3 bg-muted border border-border rounded-lg my-2">
         <pre className="font-mono text-xs text-primary font-medium">sdk.actions.signIn</pre>
       </div>
-      {!signInResult && (
-        <Button onClick={handleSignIn} disabled={signingIn}>
-          Sign In with Farcaster
-        </Button>
-      )}
-      {signInResult && (
-        <Button onClick={handleSignOut} disabled={signingOut}>
-          Sign out
-        </Button>
-      )}
+      <Button onClick={handleSignIn} disabled={signingIn}>
+        {signingIn ? "Signing In..." : "Sign In with Farcaster"}
+      </Button>
       {signInFailure && !signingIn && (
         <div className="my-2 p-3 text-xs overflow-x-scroll bg-muted border border-border rounded-lg font-mono">
           <div className="font-semibold text-muted-foreground mb-1">SIWF Error</div>

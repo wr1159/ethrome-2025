@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFrameContext } from "~/components/providers/FrameProvider";
 import { sdk } from "@farcaster/miniapp-sdk";
 import { useAccount } from "wagmi";
@@ -21,10 +21,11 @@ import { WalletConnect, SignMessage, SendEth, SignTypedData, SwitchChain, SendTr
 import { BasePay } from "~/components/wallet/BasePay";
 import { GetChainsAction } from "~/components/actions/get-chains";
 import { GetCapabilitiesAction } from "~/components/actions/get-capabilities";
+import { RequestCameraMicrophoneAction } from "~/components/actions/request-camera-microphone";
 
 
 type TabType = "actions" | "context" | "wallet";
-type ActionPageType = "list" | "signin" | "quickauth" | "openurl" | "openminiapp" | "farcaster" | "viewprofile" | "viewtoken" | "swaptoken" | "sendtoken" | "viewcast" | "composecast" | "setprimarybutton" | "closeframe" | "runtime";
+type ActionPageType = "list" | "signin" | "quickauth" | "openurl" | "openminiapp" | "farcaster" | "viewprofile" | "viewtoken" | "swaptoken" | "sendtoken" | "viewcast" | "composecast" | "setprimarybutton" | "closeframe" | "runtime" | "requestcameramicrophone";
 type WalletPageType = "list" | "basepay" | "wallet";
 
 interface ActionDefinition {
@@ -48,10 +49,29 @@ export default function Demo() {
   const [currentActionPage, setCurrentActionPage] = useState<ActionPageType>("list");
   const [currentWalletPage, setCurrentWalletPage] = useState<WalletPageType>("list");
   const [isFullObjectOpen, setIsFullObjectOpen] = useState<boolean>(false);
+  const [capabilities, setCapabilities] = useState<any>(null);
 
   const toggleFullObject = (): void => {
     setIsFullObjectOpen(prev => !prev);
   };
+
+  // Check capabilities on mount
+  useEffect(() => {
+    const getCapabilities = async () => {
+      try {
+        const caps = await sdk.getCapabilities();
+        setCapabilities(caps);
+      } catch (error) {
+        console.error('Failed to get capabilities:', error);
+      }
+    };
+    getCapabilities();
+  }, []);
+
+  // Camera/microphone feature is available if the action is supported in capabilities
+  const hasCamMicFeature = Boolean(
+    capabilities?.includes('actions.requestCameraAndMicrophoneAccess')
+  );
 
   const actionDefinitions: ActionDefinition[] = [
     { id: "signin", name: "Sign In", description: "Authenticate with Farcaster", component: SignInAction },
@@ -65,6 +85,9 @@ export default function Demo() {
     { id: "viewcast", name: "View Cast", description: "Display Farcaster casts", component: ViewCastAction },
     { id: "composecast", name: "Compose Cast", description: "Create new casts", component: ComposeCastAction },
     { id: "setprimarybutton", name: "Set Primary Button", description: "Configure primary button", component: SetPrimaryButtonAction },
+    ...(hasCamMicFeature
+      ? [{ id: "requestcameramicrophone", name: "Camera & Microphone", description: "Request access and demo camera/mic", component: RequestCameraMicrophoneAction } satisfies ActionDefinition]
+      : []),
     { id: "closeframe", name: "Close Frame", description: "Close the current frame", component: CloseFrameAction },
     { id: "runtime", name: "Runtime Detection", description: "Get chains and capabilities", component: () => null },
   ];
