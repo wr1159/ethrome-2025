@@ -16,7 +16,8 @@ import { SendTokenAction } from "~/components/actions/send-token";
 import { ViewCastAction } from "~/components/actions/view-cast";
 import { ComposeCastAction } from "~/components/actions/compose-cast";
 import { SetPrimaryButtonAction } from "~/components/actions/set-primary-button";
-import { CloseFrameAction } from "~/components/actions/close-frame";
+import { AddMiniAppAction } from "~/components/actions/add-miniapp";
+import { CloseMiniAppAction } from "~/components/actions/close-miniapp";
 import { WalletConnect, SignMessage, SendEth, SignTypedData, SwitchChain, SendTransaction, GetEthereumProvider } from "~/components/wallet/WalletActions";
 import { BasePay } from "~/components/wallet/BasePay";
 import { GetChainsAction } from "~/components/actions/get-chains";
@@ -25,7 +26,7 @@ import { RequestCameraMicrophoneAction } from "~/components/actions/request-came
 
 
 type TabType = "actions" | "context" | "wallet";
-type ActionPageType = "list" | "signin" | "quickauth" | "openurl" | "openminiapp" | "farcaster" | "viewprofile" | "viewtoken" | "swaptoken" | "sendtoken" | "viewcast" | "composecast" | "setprimarybutton" | "closeframe" | "runtime" | "requestcameramicrophone";
+type ActionPageType = "list" | "signin" | "quickauth" | "openurl" | "openminiapp" | "farcaster" | "viewprofile" | "viewtoken" | "swaptoken" | "sendtoken" | "viewcast" | "composecast" | "setprimarybutton" | "addminiapp" | "closeminiapp" | "runtime" | "requestcameramicrophone";
 type WalletPageType = "list" | "basepay" | "wallet";
 
 interface ActionDefinition {
@@ -88,7 +89,8 @@ export default function Demo() {
     ...(hasCamMicFeature
       ? [{ id: "requestcameramicrophone", name: "Camera & Microphone", description: "Request access and demo camera/mic", component: RequestCameraMicrophoneAction } satisfies ActionDefinition]
       : []),
-    { id: "closeframe", name: "Close Frame", description: "Close the current frame", component: CloseFrameAction },
+    { id: "addminiapp", name: "Add Mini App", description: "Add this Mini App to your Farcaster client", component: AddMiniAppAction },
+    { id: "closeminiapp", name: "Close Mini App", description: "Close the current Mini App", component: CloseMiniAppAction },
     { id: "runtime", name: "Runtime Detection", description: "Get chains and capabilities", component: () => null },
   ];
 
