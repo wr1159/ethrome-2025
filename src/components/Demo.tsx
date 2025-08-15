@@ -110,7 +110,11 @@ export default function Demo() {
     { id: "wallet", name: "Wallet", description: "Debug wallet interactions", component: WalletActionsComponent },
   ];
 
-  const handleTabChange = (tab: TabType) => {
+  const handleTabChange = async (tab: TabType) => {
+    if (capabilities?.includes('haptics.selectionChanged')) {
+      await sdk.haptics.selectionChanged();
+    }
+
     setActiveTab(tab);
     if (tab === "actions") {
       setCurrentActionPage("list");
@@ -119,19 +123,47 @@ export default function Demo() {
     }
   };
 
-  const handleActionSelect = (actionId: ActionPageType) => {
+  const handleActionSelect = async (actionId: ActionPageType) => {
+    // Add haptic feedback for action selection
+    try {
+      await sdk.haptics.selectionChanged();
+    } catch (error) {
+      console.log('Haptics not supported:', error);
+    }
+
     setCurrentActionPage(actionId);
   };
 
-  const handleBackToActionList = () => {
+  const handleBackToActionList = async () => {
+    // Add haptic feedback for back navigation
+    try {
+      await sdk.haptics.impactOccurred('light');
+    } catch (error) {
+      console.log('Haptics not supported:', error);
+    }
+
     setCurrentActionPage("list");
   };
 
-  const handleWalletActionSelect = (walletActionId: WalletPageType) => {
+  const handleWalletActionSelect = async (walletActionId: WalletPageType) => {
+    // Add haptic feedback for wallet action selection
+    try {
+      await sdk.haptics.selectionChanged();
+    } catch (error) {
+      console.log('Haptics not supported:', error);
+    }
+
     setCurrentWalletPage(walletActionId);
   };
 
-  const handleBackToWalletList = () => {
+  const handleBackToWalletList = async () => {
+    // Add haptic feedback for back navigation
+    try {
+      await sdk.haptics.impactOccurred('light');
+    } catch (error) {
+      console.log('Haptics not supported:', error);
+    }
+
     setCurrentWalletPage("list");
   };
 
