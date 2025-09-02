@@ -2,8 +2,6 @@
 
 A demo [mini app](https://miniapps.farcaster.xyz) to demonstrate the functionality available for mini app developers in [Base App](https://base.app).
 
-![Base Mini App Demo screenshot](https://i.imgur.com/Es8JZv5.png)
-
 ## Getting Started
 
 This is a [NextJS](https://nextjs.org/) + TypeScript + React app.

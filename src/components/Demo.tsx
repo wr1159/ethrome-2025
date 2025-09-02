@@ -23,10 +23,11 @@ import { BasePay } from "~/components/wallet/BasePay";
 import { GetChainsAction } from "~/components/actions/get-chains";
 import { GetCapabilitiesAction } from "~/components/actions/get-capabilities";
 import { RequestCameraMicrophoneAction } from "~/components/actions/request-camera-microphone";
+import { HapticsAction } from "~/components/actions/haptics";
 
 
 type TabType = "actions" | "context" | "wallet";
-type ActionPageType = "list" | "signin" | "quickauth" | "openurl" | "openminiapp" | "farcaster" | "viewprofile" | "viewtoken" | "swaptoken" | "sendtoken" | "viewcast" | "composecast" | "setprimarybutton" | "addminiapp" | "closeminiapp" | "runtime" | "requestcameramicrophone";
+type ActionPageType = "list" | "signin" | "quickauth" | "openurl" | "openminiapp" | "farcaster" | "viewprofile" | "viewtoken" | "swaptoken" | "sendtoken" | "viewcast" | "composecast" | "setprimarybutton" | "addminiapp" | "closeminiapp" | "runtime" | "requestcameramicrophone" | "haptics";
 type WalletPageType = "list" | "basepay" | "wallet";
 
 interface ActionDefinition {
@@ -86,6 +87,7 @@ export default function Demo() {
     { id: "viewcast", name: "View Cast", description: "Display Farcaster casts", component: ViewCastAction },
     { id: "composecast", name: "Compose Cast", description: "Create new casts", component: ComposeCastAction },
     { id: "setprimarybutton", name: "Set Primary Button", description: "Configure primary button", component: SetPrimaryButtonAction },
+    { id: "haptics", name: "Haptics", description: "Trigger haptic feedback", component: HapticsAction },
     ...(hasCamMicFeature
       ? [{ id: "requestcameramicrophone", name: "Camera & Microphone", description: "Request access and demo camera/mic", component: RequestCameraMicrophoneAction } satisfies ActionDefinition]
       : []),
