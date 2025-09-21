@@ -15,16 +15,19 @@ export async function GET() {
         "iconUrl": METADATA.iconImageUrl,
         "homeUrl": METADATA.homeUrl,
         "imageUrl": METADATA.bannerImageUrl,
+        "webhookUrl": `${METADATA.homeUrl}/api/webhook`,
         "splashImageUrl": METADATA.iconImageUrl,
         "splashBackgroundColor": METADATA.splashBackgroundColor,
         "description": METADATA.description,
         "ogTitle": METADATA.name,
         "ogDescription": METADATA.description,
         "ogImageUrl": METADATA.bannerImageUrl,
+        "primaryCategory": "developer-tools",
         "requiredCapabilities": [
           "actions.ready",
           "actions.signIn", 
           "actions.openMiniApp",
+          "actions.addMiniApp",
           "actions.openUrl",
           "actions.sendToken",
           "actions.viewToken", 
@@ -40,7 +43,6 @@ export async function GET() {
           "eip155:8453",
           "eip155:10"
         ],
-        "canonicalDomain": "frames-v2-demo-lilac.vercel.app",
         "noindex": false,
         "tags": ["base", "baseapp", "miniapp", "demo", "basepay"]
       },
