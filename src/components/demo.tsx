@@ -19,7 +19,7 @@ import { ComposeCastAction } from "~/components/actions/compose-cast";
 import { SetPrimaryButtonAction } from "~/components/actions/set-primary-button";
 import { AddMiniAppAction } from "~/components/actions/add-miniapp";
 import { CloseMiniAppAction } from "~/components/actions/close-miniapp";
-import { SignMessage, SignSiweMessage, SendEth, SignTypedData, SwitchChain, SendTransaction } from "~/components/wallet/wallet-actions";
+import { SignSiweMessage, SwitchChain } from "~/components/wallet/wallet-actions";
 import { BasePay } from "~/components/wallet/base-pay";
 import { RequestCameraMicrophoneAction } from "~/components/actions/request-camera-microphone";
 import { HapticsAction } from "~/components/actions/haptics";
@@ -35,12 +35,11 @@ import { TabType, ActionPageType, WalletPageType, ActionDefinition, WalletAction
 
 
 const WalletActionsComponent = () => (
-  <div className="space-y-4">
-    <SignMessage />
-    <SignSiweMessage />
-    <SendEth />
-    <SendTransaction />
-    <SignTypedData />
+  <div className="space-y-6">
+    <div>
+      <h3 className="text-sm font-medium mb-3">Interactions</h3>
+      <SignSiweMessage />
+    </div>
     <SwitchChain />
   </div>
 );

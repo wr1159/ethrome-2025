@@ -41,7 +41,7 @@ export function WalletConnect() {
           variant="outline"
           className="w-full"
         >
-          Connect {connector.name}
+          Connect
         </Button>
       ))}
     </div>
@@ -349,6 +349,7 @@ export function SignTypedData() {
 }
 
 export function SwitchChain() {
+  const { chain: currentChain } = useAccount();
   const { switchChain, isPending } = useSwitchChain();
 
   const chains = [
@@ -357,19 +358,29 @@ export function SwitchChain() {
   ];
 
   return (
-    <div className="space-y-2">
-      <div className="text-sm font-medium mb-2">Switch Chain</div>
-      {chains.map((chain) => (
-        <Button
-          key={chain.id}
-          onClick={() => switchChain({ chainId: chain.id })}
-          disabled={isPending}
-          variant="outline"
-          className="w-full"
-        >
-          {isPending ? "Switching..." : `Switch to ${chain.name}`}
-        </Button>
-      ))}
+    <div className="space-y-3">
+      <div className="text-sm font-medium">Switch Chain</div>
+      {currentChain && (
+        <div className="text-xs text-muted-foreground">
+          Currently on: <span className="font-medium">{currentChain.name}</span>
+        </div>
+      )}
+      <div className="flex gap-2">
+        {chains.map((chain) => {
+          const isActive = currentChain?.id === chain.id;
+          return (
+            <Button
+              key={chain.id}
+              onClick={() => switchChain({ chainId: chain.id })}
+              disabled={isPending || isActive}
+              variant={isActive ? "default" : "outline"}
+              className="flex-1"
+            >
+              {isPending ? "Switching..." : chain.name}
+            </Button>
+          );
+        })}
+      </div>
     </div>
   );
 }

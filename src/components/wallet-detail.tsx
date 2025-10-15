@@ -2,6 +2,7 @@
 
 import { Button, Typography } from "@worldcoin/mini-apps-ui-kit-react";
 import { WalletActionDefinition, WalletPageType } from "~/types";
+import { HapticWrapper } from "~/components/haptic-wrapper";
 
 interface WalletDetailProps {
   currentWalletPage: WalletPageType;
@@ -15,14 +16,15 @@ export function WalletDetail({ currentWalletPage, walletActionDefinitions, onBac
   return (
     <div>
       <div className="flex items-center gap-3 mb-4">
-        <Button
-          onClick={onBack}
-          variant="secondary"
-          size="sm"
-          className="p-2"
-        >
-          <span className="text-muted-foreground">←</span>
-        </Button>
+        <HapticWrapper onClick={onBack} hapticType="impact">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="p-2"
+          >
+            <span className="text-muted-foreground">←</span>
+          </Button>
+        </HapticWrapper>
         <Typography variant="heading" className="font-semibold text-foreground">
           {currentWalletAction?.name}
         </Typography>

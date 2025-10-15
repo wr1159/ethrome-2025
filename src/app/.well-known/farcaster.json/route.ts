@@ -47,7 +47,7 @@ export async function GET() {
         "tags": ["base", "baseapp", "miniapp", "demo", "basepay"]
       },
       "baseBuilder": {
-        "allowedAddresses": ["0x468D349D68b4354E9bEa045E985a035739665008"],
+        "allowedAddresses": ["0x8342A48694A74044116F330db5050a267b28dD85"],
       }
   };
 
