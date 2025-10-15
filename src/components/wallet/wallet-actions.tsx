@@ -2,10 +2,12 @@
 "use client";
 
 import { Button } from "~/components/ui/button";
-import { useState, ChangeEvent } from "react";
-import { useAccount, useConnect, useDisconnect, useSignMessage, useSwitchChain, useSendTransaction } from "wagmi";
+import { useState, ChangeEvent, useEffect } from "react";
+import { useAccount, useConnect, useDisconnect, useSignMessage, useSwitchChain, useSendTransaction, useConfig } from "wagmi";
 import { parseEther, createWalletClient, custom, type Address } from "viem";
+import { verifyMessage } from "@wagmi/core";
 import { base, optimism } from "viem/chains";
+import { generateSiweNonce } from "viem/siwe";
 import { SiweMessage } from "siwe";
 import { truncateAddress } from "~/lib/truncateAddress";
 
@@ -90,22 +92,72 @@ export function SignMessage() {
 }
 
 export function SignSiweMessage() {
-  const { address } = useAccount();
+  const config = useConfig();
+  const { address, chain } = useAccount();
   const { signMessage, data: signature, isPending } = useSignMessage();
+  const [lastMessage, setLastMessage] = useState<SiweMessage | null>(null);
+  const [verifyResult, setVerifyResult] = useState<{ success: boolean; error?: string } | null>(null);
+
+  useEffect(() => {
+    const verifySignature = async () => {
+      if (!signature || !lastMessage || !address || !chain) return;
+
+      try {
+        const isValid = await verifyMessage(config, {
+          address,
+          message: lastMessage.prepareMessage(),
+          signature,
+          chainId: chain.id,
+        });
+        
+        setVerifyResult({ success: isValid });
+        if (!isValid) {
+          setVerifyResult({ success: false, error: 'Signature verification failed' });
+        }
+      } catch (error) {
+        setVerifyResult({ 
+          success: false, 
+          error: error instanceof Error ? error.message : 'Unknown error' 
+        });
+      }
+    };
+
+    verifySignature();
+  }, [signature, lastMessage, address, chain, config]);
 
   const handleSignSiwe = () => {
-    if (!address) return;
+    if (!address || !chain) return;
 
+    setVerifyResult(null);
     const message = new SiweMessage({
       domain: window.location.host,
       address,
       statement: "Sign in with Ethereum to this mini app.",
       uri: window.location.origin,
       version: "1",
-      chainId: 8453,
-      nonce: Math.random().toString(36).substring(7),
+      chainId: chain.id,
+      nonce: generateSiweNonce(),
     });
 
+    setLastMessage(message);
+    signMessage({ message: message.prepareMessage() });
+  };
+
+  const handleSignSiweInvalidDomain = () => {
+    if (!address || !chain) return;
+
+    setVerifyResult(null);
+    const message = new SiweMessage({
+      domain: "https://frames-v2-demo-lilac.vercel.app",
+      address,
+      statement: "Sign in with Ethereum to this mini app.",
+      uri: window.location.origin,
+      version: "1",
+      chainId: chain.id,
+      nonce: generateSiweNonce(),
+    });
+
+    setLastMessage(message);
     signMessage({ message: message.prepareMessage() });
   };
 
@@ -113,18 +165,43 @@ export function SignSiweMessage() {
     <div className="space-y-3">
       <Button
         onClick={handleSignSiwe}
-        disabled={isPending || !address}
+        disabled={isPending || !address || !chain}
         className="w-full"
       >
         {isPending ? "Signing..." : "Sign SIWE Message"}
       </Button>
 
+      <Button
+        onClick={handleSignSiweInvalidDomain}
+        disabled={isPending || !address || !chain}
+        variant="outline"
+        className="w-full"
+      >
+        {isPending ? "Signing..." : "Sign SIWE (Invalid Domain Demo)"}
+      </Button>
+
       {signature && (
-        <div className="mt-3">
-          <div className="text-sm font-medium mb-2">SIWE Signature:</div>
-          <div className="p-2 bg-muted rounded text-xs font-mono break-all">
-            {signature}
+        <div className="mt-3 space-y-2">
+          <div className="p-3 text-xs overflow-x-scroll bg-muted border border-border rounded-lg font-mono">
+            <div className="font-semibold text-muted-foreground mb-1">SIWE Signature</div>
+            <div className="whitespace-pre text-primary break-all">{signature}</div>
           </div>
+
+          {verifyResult && (
+            <div className="p-3 text-xs bg-muted border border-border rounded-lg font-mono">
+              <div className="font-semibold text-muted-foreground mb-1">Verification Result</div>
+              {verifyResult.success ? (
+                <div className="text-green-600 font-medium">✓ Valid signature</div>
+              ) : (
+                <div>
+                  <div className="text-destructive font-medium">✗ Invalid signature</div>
+                  {verifyResult.error && (
+                    <div className="text-destructive mt-1 text-xs">{verifyResult.error}</div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>
