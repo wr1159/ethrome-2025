@@ -1,10 +1,18 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export default function ErudaProvider() {
+  const pathname = usePathname();
+
   useEffect(() => {
-        import("eruda").then((eruda) => {
+    // Skip initialization on /test route
+    if (pathname === "/test") {
+      return;
+    }
+
+    import("eruda").then((eruda) => {
       if (!window.eruda) {
         window.eruda = eruda.default;
         const erudaInstance = eruda.default as {
@@ -31,7 +39,7 @@ export default function ErudaProvider() {
         console.log("Eruda initialized for debugging");
       }
     });
-  }, []);
+  }, [pathname]);
 
   return null;
 }
