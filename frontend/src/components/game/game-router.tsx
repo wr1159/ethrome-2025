@@ -122,7 +122,7 @@ export default function GameRouter({
             </div>
           )}
 
-          <div className="flex gap-4">
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
             <Button onClick={() => onScreenChange("avatar-creator")}>
               {avatarImageData ? "Edit Avatar" : "Create Avatar"}
             </Button>
