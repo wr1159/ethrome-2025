@@ -18,7 +18,6 @@ export default function GameRouter({
   const [avatarImageData, setAvatarImageData] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string>("");
-  const [selectedPlayer, setSelectedPlayer] = useState<any>(null);
 
   const handleAvatarSave = async (imageData: string, avatarUrl?: string) => {
     setIsSaving(true);
@@ -48,12 +47,6 @@ export default function GameRouter({
 
   const handleAvatarCancel = () => {
     onScreenChange("home");
-  };
-
-  const handleVisitPlayer = (player: any) => {
-    setSelectedPlayer(player);
-    // TODO: Implement visit dialog
-    console.log("Visiting player:", player);
   };
 
   const handleBackToHome = () => {
@@ -138,12 +131,7 @@ export default function GameRouter({
         </div>
       );
     case "neighborhood":
-      return (
-        <NeighborhoodScreen
-          onBack={handleBackToHome}
-          onVisitPlayer={handleVisitPlayer}
-        />
-      );
+      return <NeighborhoodScreen onBack={handleBackToHome} />;
     default:
       return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-orange-100">
