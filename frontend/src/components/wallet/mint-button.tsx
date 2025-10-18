@@ -10,6 +10,7 @@ interface MintButtonProps {
 }
 export default function MintButton({ fid, tokenURI }: MintButtonProps) {
   const account = useAccount();
+  const { writeContracts } = useWriteContracts();
   const { writeContract } = useWriteContract();
   const { data: availableCapabilities } = useCapabilities({
     account: account.address,
@@ -51,13 +52,30 @@ export default function MintButton({ fid, tokenURI }: MintButtonProps) {
         );
       }
 
-      const result = await writeContract({
+      if (capabilities) {
+        await writeContracts({
+          contracts: [
+            {
+              address: contractAddress,
+              abi: avatarNftAbi,
+              functionName: "mint",
+              args: [BigInt(fid), tokenURI],
+            },
+          ],
+          capabilities,
+        });
+        return;
+      }
+
+      await writeContract({
         address: contractAddress,
         abi: avatarNftAbi,
         functionName: "mint",
         args: [BigInt(fid), tokenURI],
       });
-    } catch (error) {}
+    } catch (error) {
+      console.error("Mint failed:", error);
+    }
   };
 
   return <Button onClick={handleSponsoredMint}>Mint NFT</Button>;
