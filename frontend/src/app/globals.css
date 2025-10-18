@@ -1,68 +1,90 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P:wght@400&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Base Docs inspired color palette */
-  --background: #ffffff;
-  --foreground: #0f172a;
+  /* Trick or TrETH Halloween Theme */
+  --background: #fff7ed;
+  --foreground: #9a3412;
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #9a3412;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #0052ff;
+  --popover-foreground: #9a3412;
+  --primary: #ea580c;
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
-  --destructive: #ef4444;
+  --secondary: #fed7aa;
+  --secondary-foreground: #9a3412;
+  --muted: #fef3c7;
+  --muted-foreground: #92400e;
+  --accent: #6b21a8;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #0052ff;
+  --border: #fed7aa;
+  --input: #fed7aa;
+  --ring: #ea580c;
   --radius: 0.5rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Keep white background even in dark mode */
-    --background: #ffffff;
-    --foreground: #0f172a;
-    --card: #ffffff;
-    --card-foreground: #0f172a;
-    --popover: #ffffff;
-    --popover-foreground: #0f172a;
-    --primary: #0052ff;
+    /* Dark mode Halloween theme */
+    --background: #b3a59b;
+    --foreground: #fed7aa;
+    --card: #292524;
+    --card-foreground: #fed7aa;
+    --popover: #292524;
+    --popover-foreground: #fed7aa;
+    --primary: #ea580c;
     --primary-foreground: #ffffff;
-    --secondary: #f1f5f9;
-    --secondary-foreground: #0f172a;
-    --muted: #f8fafc;
-    --muted-foreground: #64748b;
-    --accent: #f1f5f9;
-    --accent-foreground: #0f172a;
-    --destructive: #ef4444;
+    --secondary: #44403c;
+    --secondary-foreground: #fed7aa;
+    --muted: #44403c;
+    --muted-foreground: #a78bfa;
+    --accent: #6b21a8;
+    --accent-foreground: #ffffff;
+    --destructive: #dc2626;
     --destructive-foreground: #ffffff;
-    --border: #e2e8f0;
-    --input: #e2e8f0;
-    --ring: #0052ff;
+    --border: #44403c;
+    --input: #44403c;
+    --ring: #ea580c;
   }
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Press Start 2P', monospace;
   font-feature-settings: 'rlig' 1, 'calt' 1;
 }
 
+/* 8-bit pixel art styling */
+.pixel-font {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Button styles are now handled by the Button component using CSS variables */
+
+/* Spin animation for loading states */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 * {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
 }
 
 *::-webkit-scrollbar {
