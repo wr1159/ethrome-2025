@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
 
-
 import "~/app/globals.css";
 import "@worldcoin/mini-apps-ui-kit-react/styles.css";
 import { Providers } from "~/app/providers";
 import { METADATA } from "~/lib/utils";
+import { Toaster } from "~/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: METADATA.name,
-    openGraph: {
-      title: METADATA.name,
-      description: METADATA.description,
-      images: [METADATA.bannerImageUrl],
-      url: METADATA.homeUrl,
-      siteName: METADATA.name
-    },
+  openGraph: {
+    title: METADATA.name,
+    description: METADATA.description,
+    images: [METADATA.bannerImageUrl],
+    url: METADATA.homeUrl,
+    siteName: METADATA.name,
+  },
 };
 
 export default async function RootLayout({
@@ -25,6 +25,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
+        <Toaster />
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -5,6 +5,7 @@ import { Button } from "~/components/ui/button";
 import { useFrameContext } from "../providers/frame-provider";
 import { Name } from "@coinbase/onchainkit/identity";
 import VisitDialog from "./visit-dialog";
+import { toast } from "sonner";
 
 interface Player {
   fid: number;
@@ -101,11 +102,16 @@ export default function NeighborhoodScreen({
 
       const result = await response.json();
       console.log("Visit recorded successfully:", result);
+      toast.success("Visit recorded successfully! 🎃");
 
       // Close dialog and show success
       setSelectedPlayer(null);
     } catch (error) {
       console.error("Failed to record visit:", error);
+      toast.error(
+        "Failed to record visit: " +
+          (error instanceof Error ? error.message : "Unknown error")
+      );
     } finally {
       setIsSubmittingVisit(false);
     }

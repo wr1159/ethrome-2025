@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { useFrameContext } from "../providers/frame-provider";
 import VisitorCard from "./visitor-card";
+import { toast } from "sonner";
 
 interface Visitor {
   id: string;
@@ -100,7 +101,7 @@ export default function HomeScreen({
         }
 
         console.log("Match recorded successfully!");
-        alert("TrETH sent! 🎃");
+        toast.success("Success! 🎃");
       } else {
         // Mark as seen but not matched (swipe left = decline)
         const response = await fetch("/api/visits", {
@@ -119,13 +120,14 @@ export default function HomeScreen({
         }
 
         console.log("Visit declined");
+        toast.warning("Visit declined successfully! 🎃");
       }
 
       // Move to next visitor
       setCurrentVisitorIndex((prev) => prev + 1);
     } catch (error) {
       console.error("Failed to process swipe:", error);
-      alert(
+      toast.error(
         "Failed to process swipe: " +
           (error instanceof Error ? error.message : "Unknown error")
       );

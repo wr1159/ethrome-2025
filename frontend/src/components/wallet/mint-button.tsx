@@ -4,6 +4,7 @@ import { useCapabilities, useWriteContracts } from "wagmi/experimental";
 import { avatarNftAbi, avatarNftAddress } from "~/generated";
 import { Button } from "../ui/button";
 import { baseSepolia } from "wagmi/chains";
+import { toast } from "sonner";
 
 interface MintButtonProps {
   fid: number;
@@ -80,7 +81,7 @@ export default function MintButton({ fid, tokenURI }: MintButtonProps) {
           capabilities,
         });
         console.log("writeContracts result:", result);
-        alert("NFT minted successfully with sponsored transaction!");
+        toast.success("NFT minted successfully with sponsored transaction!");
         return;
       }
 
@@ -92,8 +93,13 @@ export default function MintButton({ fid, tokenURI }: MintButtonProps) {
         functionName: "mint",
         args: [BigInt(fid), tokenURI],
       });
+      toast.success("NFT minted successfully!");
     } catch (error) {
       console.error("Mint failed:", error);
+      toast.error(
+        "Mint failed: " +
+          (error instanceof Error ? error.message : "Unknown error")
+      );
     }
   };
 

@@ -6,6 +6,7 @@ import { PixelColor } from "~/types";
 import { useAccount } from "wagmi";
 import { useFrameContext } from "../providers/frame-provider";
 import MintButton from "../wallet/mint-button";
+import { toast } from "sonner";
 
 // Primary paint colors using CSS variables
 const PIXEL_COLORS: PixelColor[] = [
@@ -236,6 +237,7 @@ export default function AvatarCreator({
 
       const result = await response.json();
       console.log("Avatar uploaded successfully:", result);
+      toast.success("Avatar saved successfully! 🎃");
       onSave(imageData, result.avatarUrl);
     } catch (error) {
       console.error("Failed to save avatar:", error);
