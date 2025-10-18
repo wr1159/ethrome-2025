@@ -1,11 +1,11 @@
+"use client";
+
 import sdk from "@farcaster/miniapp-sdk";
 import { Metadata } from "next";
 import { useSearchParams } from "next/navigation";
 import { env } from "process";
 import { useEffect, useState } from "react";
-import GameRouter from "~/components/game/game-router";
 import { Button } from "~/components/ui/button";
-import { GameScreen } from "~/types";
 
 const appUrl = env.NEXT_PUBLIC_URL;
 
