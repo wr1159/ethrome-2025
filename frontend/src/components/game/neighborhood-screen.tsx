@@ -2,11 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";
-import { useAccount, useEnsName } from "wagmi";
 import { useFrameContext } from "../providers/frame-provider";
-import { truncateAddress } from "~/lib/truncateAddress";
 import { Name } from "@coinbase/onchainkit/identity";
-import { base } from "wagmi/chains";
 
 interface Player {
   fid: number;
@@ -26,7 +23,6 @@ export default function NeighborhoodScreen({
   onBack,
   onVisitPlayer,
 }: NeighborhoodScreenProps) {
-  const { address } = useAccount();
   const frameContext = useFrameContext();
   const user = (frameContext?.context as any)?.user ?? null;
   const currentFid = user?.fid ?? -1;
@@ -36,6 +32,8 @@ export default function NeighborhoodScreen({
   const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(0);
   const housesPerPage = 2; // Show 2 houses per page
+  const [houseImages, setHouseImages] = useState<string[]>([]);
+  const [isShuffling, setIsShuffling] = useState(false);
   console.log("currentPage", currentPage);
 
   // Fetch players on component mount
@@ -88,11 +86,31 @@ export default function NeighborhoodScreen({
 
   const handlePreviousPage = () => {
     setCurrentPage((prev) => Math.max(0, prev - 1));
+    shuffleHouseImages(); // Shuffle houses when changing pages
   };
 
   const handleNextPage = () => {
     setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1));
+    shuffleHouseImages(); // Shuffle houses when changing pages
   };
+
+  // Shuffle house images function
+  const shuffleHouseImages = () => {
+    setIsShuffling(true);
+    const houses = ["/game/house1.png", "/game/house2.png", "/game/house3.png"];
+    const shuffled = [...houses].sort(() => Math.random() - 0.5);
+    setHouseImages(shuffled);
+
+    // Reset shuffling state after a short delay
+    setTimeout(() => {
+      setIsShuffling(false);
+    }, 300);
+  };
+
+  // Initialize house images on component mount
+  useEffect(() => {
+    shuffleHouseImages();
+  }, []);
 
   if (loading) {
     return (
@@ -195,9 +213,11 @@ export default function NeighborhoodScreen({
               disabled={!currentPlayers[0]}
             >
               <img
-                src="/game/house1.png"
+                src={houseImages[0] || "/game/house1.png"}
                 alt="House 1"
-                className="size-32 object-contain transition-transform group-hover:scale-105 md:size-64"
+                className={`size-32 object-contain transition-all duration-300 group-hover:scale-105 md:size-64 ${
+                  isShuffling ? "opacity-50 scale-95" : "opacity-100 scale-100"
+                }`}
                 style={{ imageRendering: "pixelated" }}
               />
 
@@ -242,9 +262,11 @@ export default function NeighborhoodScreen({
               disabled={!currentPlayers[1]}
             >
               <img
-                src="/game/house3.png"
+                src={houseImages[1] || "/game/house2.png"}
                 alt="House 2"
-                className="size-32 object-contain transition-transform group-hover:scale-105 md:size-64"
+                className={`size-32 object-contain transition-all duration-300 group-hover:scale-105 md:size-64 ${
+                  isShuffling ? "opacity-50 scale-95" : "opacity-100 scale-100"
+                }`}
                 style={{ imageRendering: "pixelated" }}
               />
 
