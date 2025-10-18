@@ -41,15 +41,15 @@ export function WalletConnect() {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 flex flex-col justify-center items-center gap-2">
       {connectors.map((connector) => (
         <Button
           key={connector.uid}
           onClick={() => connect({ connector })}
           variant="outline"
-          className="w-full"
+          className="w-fit"
         >
-          Connect
+          Connect with {connector.name}
         </Button>
       ))}
     </div>

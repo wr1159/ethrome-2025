@@ -3,8 +3,11 @@
 import React, { useState } from "react";
 import GameRouter from "~/components/game/game-router";
 import { GameScreen } from "~/types";
+import { useAccount } from "wagmi";
+import { WalletConnect } from "~/components/wallet/wallet-actions";
 
 export default function App() {
+  const { isConnected } = useAccount();
   const [currentScreen, setCurrentScreen] = useState<GameScreen>("home");
   const [showGame, setShowGame] = useState(false);
 
@@ -27,12 +30,16 @@ export default function App() {
         and earn ETH rewards!
       </p>
       <div className="flex gap-4">
-        <button
-          onClick={() => setShowGame(true)}
-          className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-lg text-xl font-semibold"
-        >
-          Start Game
-        </button>
+        {isConnected ? (
+          <button
+            onClick={() => setShowGame(true)}
+            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-lg text-xl font-semibold"
+          >
+            Start Game
+          </button>
+        ) : (
+          <WalletConnect />
+        )}
       </div>
       {/* {!showGame && (
         <div className="mt-8">
