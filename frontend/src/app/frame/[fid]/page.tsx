@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { env } from "process";
-import App from "../app";
+import App from "../../app";
 import { METADATA } from "~/lib/utils";
 
 const appUrl = env.NEXT_PUBLIC_URL;
@@ -8,12 +8,12 @@ const appUrl = env.NEXT_PUBLIC_URL;
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ fid: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }): Promise<Metadata> {
-  const { id } = await params;
+  const { fid } = await params;
 
-  const imageUrl = new URL(`${appUrl}/api/og/${id}`);
+  const imageUrl = new URL(`${appUrl}/api/og/${fid}`);
 
   const frame = {
     version: "next",
