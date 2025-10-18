@@ -23,6 +23,7 @@ export default function MintButton({ fid, tokenURI }: MintButtonProps) {
     if (!availableCapabilities || !account.chainId) return {};
     const capabilitiesForChain = availableCapabilities[account.chainId];
     if (
+      capabilitiesForChain &&
       capabilitiesForChain["paymasterService"] &&
       capabilitiesForChain["paymasterService"].supported
     ) {
