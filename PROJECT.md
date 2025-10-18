@@ -81,23 +81,26 @@ CREATE INDEX idx_visits_visitor ON visits(visitor_fid);
 
 **`/api/avatar/mint/route.ts`** - Mint NFT
 
-- Call AvatarNFT.mint() with tokenURI (In Frontend)
+- Frontend calls AvatarNFT.mint() directly with user's wallet
   - Try gasless first (paymaster), fallback to user EOA
-- Update player record with token_id
+- Backend only records the mint result in database (token_id, transaction hash)
+- No backend contract signing
 
 **`/api/players/route.ts`** - Get all players with avatars
 
 **`/api/visits/create/route.ts`** - Record visit
 
-- Create visit record in Supabase
-- Call LeaderboardContract.recordVisit() - (In Frontend)
+- Create visit record in Supabase database only
+- Frontend calls LeaderboardContract.recordVisit() directly with user's wallet
+- Backend only stores the visit data, no contract interaction
 
 **`/api/visits/[fid]/route.ts`** - Get visits for homeowner
 
 **`/api/visits/match/route.ts`** - Record match (swipe right)
 
-- Update visit.matched = true
-- Call LeaderboardContract.recordMatch() - (In Frontend)
+- Update visit.matched = true in database
+- Frontend calls LeaderboardContract.recordMatch() directly with user's wallet
+- Backend only updates database, no contract signing
 
 **`/api/leaderboard/route.ts`** - Get top players
 
@@ -211,15 +214,17 @@ SUPABASE_SERVICE_ROLE_KEY=
 NEXT_PUBLIC_BASE_RPC_URL=
 NEXT_PUBLIC_AVATAR_NFT_ADDRESS=
 NEXT_PUBLIC_LEADERBOARD_ADDRESS=
-PRIVATE_KEY= (for backend contract calls)
+# No PRIVATE_KEY needed - all contract calls from frontend
 ```
 
 **Contract Deployment**:
 
-1. Deploy AvatarNFT to Base Sepolia (testnet first)
-2. Deploy LeaderboardContract
-3. Set up paymaster (Base Paymaster Service or skip for MVP)
-4. Fund LeaderboardContract with prize pool ETH
+1. Write comprehensive tests for both contracts
+2. Deploy AvatarNFT to Base Sepolia (testnet first)
+3. Deploy LeaderboardContract
+4. Set up paymaster (Base Paymaster Service or skip for MVP)
+5. Fund LeaderboardContract with prize pool ETH
+6. Deploy to Base mainnet after testing
 
 **Mini App Manifest**:
 
@@ -259,11 +264,58 @@ PRIVATE_KEY= (for backend contract calls)
 ## Key Dependencies to Add
 
 ```bash
-npm install @supabase/supabase-js
-npm install @farcaster/quick-auth
-npm install ethers # for contract interactions
-npm install canvas # for server-side image processing
-npm install react-spring # for swipe animations
+yarn add @supabase/supabase-js
+yarn add @farcaster/quick-auth
+yarn add ethers # for contract interactions
+yarn add canvas # for server-side image processing
+yarn add react-spring # for swipe animations
+
+## Smart Contract Development (Test-Driven)
+
+**Setup with Foundry**:
+```bash
+# Install Foundry
+curl -L https://foundry.paradigm.xyz | bash
+foundryup
+
+# In contracts/ directory
+forge init --no-git trick-or-treth
+cd trick-or-treth
+forge install openzeppelin/openzeppelin-contracts
+```
+
+**Test Structure**:
+
+```
+contracts/
+  src/
+    AvatarNFT.sol
+    LeaderboardContract.sol
+  test/
+    AvatarNFT.t.sol
+    LeaderboardContract.t.sol
+    Integration.t.sol
+  script/
+    Deploy.s.sol
+  foundry.toml
+```
+
+**Test Coverage**:
+
+- AvatarNFT: mint, tokenURI, FID mapping, access control
+- LeaderboardContract: visit recording, match recording, prize distribution
+- Integration tests: full game flow with mock data
+- Gas optimization tests for paymaster compatibility
+- Fuzz testing for edge cases
+
+**Commands**:
+
+```bash
+forge test                    # Run all tests
+forge test -vvv              # Verbose output
+forge test --match-test testMint # Run specific test
+forge coverage               # Coverage report
+forge script script/Deploy.s.sol --rpc-url $BASE_SEPOLIA_RPC_URL --broadcast
 ```
 
 ## Critical Hackathon Notes
