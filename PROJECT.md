@@ -53,6 +53,7 @@ CREATE TABLE visits (
   homeowner_fid BIGINT REFERENCES players(fid),
   message TEXT,
   matched BOOLEAN DEFAULT FALSE,
+  seen BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT NOW()
 );
 
