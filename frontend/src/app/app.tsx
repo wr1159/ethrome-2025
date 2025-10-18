@@ -3,12 +3,15 @@
 import React, { useState } from "react";
 import GameRouter from "~/components/game/game-router";
 import { GameScreen } from "~/types";
-import { useAccount } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
 import { WalletConnect } from "~/components/wallet/wallet-actions";
+import { baseSepolia } from "wagmi/chains";
+import { Button } from "~/components/ui/button";
 
 export default function App() {
-  const { isConnected } = useAccount();
+  const { isConnected, chainId } = useAccount();
   const [currentScreen, setCurrentScreen] = useState<GameScreen>("home");
+  const { switchChain } = useSwitchChain();
   const [showGame, setShowGame] = useState(false);
 
   if (showGame) {
@@ -31,12 +34,18 @@ export default function App() {
       </p>
       <div className="flex gap-4">
         {isConnected ? (
-          <button
-            onClick={() => setShowGame(true)}
-            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-lg text-xl font-semibold"
-          >
-            Start Game
-          </button>
+          chainId === baseSepolia.id ? (
+            <Button
+              onClick={() => setShowGame(true)}
+              className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-lg text-xl font-semibold"
+            >
+              Start Game
+            </Button>
+          ) : (
+            <Button onClick={() => switchChain({ chainId: baseSepolia.id })}>
+              Switch to Base Sepolia
+            </Button>
+          )
         ) : (
           <WalletConnect />
         )}
