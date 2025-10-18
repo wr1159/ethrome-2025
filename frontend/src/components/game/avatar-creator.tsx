@@ -461,7 +461,7 @@ export default function AvatarCreator({
               : "Save Avatar"}
         </Button>
         <Button onClick={onCancel} variant="secondary">
-          Cancel
+          Exit
         </Button>
         <MintButton
           fid={fid}

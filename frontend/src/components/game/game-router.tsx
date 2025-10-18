@@ -35,7 +35,6 @@ export default function GameRouter({
       // Show success message for 2 seconds, then go to home
       setTimeout(() => {
         setSaveMessage("");
-        onScreenChange("home");
       }, 2000);
     } catch (error) {
       console.error("Failed to save avatar:", error);
@@ -138,7 +137,7 @@ export default function GameRouter({
 
           <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
             <Button onClick={() => onScreenChange("avatar-creator")}>
-              {avatarImageData ? "Edit Avatar" : "Create Avatar"}
+              Create Avatar
             </Button>
             <Button
               onClick={() => onScreenChange("neighborhood")}
