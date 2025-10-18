@@ -31,15 +31,24 @@ export default function VisitorCard({
   onSwipe,
   isProcessing,
 }: VisitorCardProps) {
-  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
-    null
-  );
+  const [dragStart, setDragStart] = useState<{
+    x: number;
+    y: number;
+    time: number;
+  } | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [lastMove, setLastMove] = useState<{
+    x: number;
+    y: number;
+    time: number;
+  } | null>(null);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isProcessing) return;
-    setDragStart({ x: e.clientX, y: e.clientY });
+    const now = Date.now();
+    setDragStart({ x: e.clientX, y: e.clientY, time: now });
+    setLastMove({ x: e.clientX, y: e.clientY, time: now });
     setIsDragging(true);
   };
 
@@ -48,19 +57,42 @@ export default function VisitorCard({
 
     const deltaX = e.clientX - dragStart.x;
     const deltaY = e.clientY - dragStart.y;
+    const now = Date.now();
 
     setDragOffset({ x: deltaX, y: deltaY });
+    setLastMove({ x: e.clientX, y: e.clientY, time: now });
   };
 
   const handleMouseUp = () => {
     if (!isDragging || isProcessing) return;
 
-    const threshold = 100;
-    if (Math.abs(dragOffset.x) > threshold) {
-      onSwipe(dragOffset.x > 0 ? "right" : "left");
+    // Calculate velocity for momentum-based swiping
+    let shouldSwipe = false;
+    let swipeDirection: "left" | "right" | null = null;
+
+    if (lastMove && dragStart) {
+      const timeDelta = lastMove.time - dragStart.time;
+      const velocity = Math.abs(dragOffset.x) / Math.max(timeDelta, 1);
+
+      // Swipe if either distance threshold OR velocity threshold is met
+      const distanceThreshold = 80;
+      const velocityThreshold = 0.5; // pixels per ms
+
+      if (
+        Math.abs(dragOffset.x) > distanceThreshold ||
+        velocity > velocityThreshold
+      ) {
+        shouldSwipe = true;
+        swipeDirection = dragOffset.x > 0 ? "right" : "left";
+      }
+    }
+
+    if (shouldSwipe && swipeDirection) {
+      onSwipe(swipeDirection);
     }
 
     setDragStart(null);
+    setLastMove(null);
     setDragOffset({ x: 0, y: 0 });
     setIsDragging(false);
   };
@@ -68,7 +100,9 @@ export default function VisitorCard({
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isProcessing) return;
     const touch = e.touches[0];
-    setDragStart({ x: touch.clientX, y: touch.clientY });
+    const now = Date.now();
+    setDragStart({ x: touch.clientX, y: touch.clientY, time: now });
+    setLastMove({ x: touch.clientX, y: touch.clientY, time: now });
     setIsDragging(true);
   };
 
@@ -78,25 +112,53 @@ export default function VisitorCard({
     const touch = e.touches[0];
     const deltaX = touch.clientX - dragStart.x;
     const deltaY = touch.clientY - dragStart.y;
+    const now = Date.now();
 
     setDragOffset({ x: deltaX, y: deltaY });
+    setLastMove({ x: touch.clientX, y: touch.clientY, time: now });
   };
 
   const handleTouchEnd = () => {
     if (!isDragging || isProcessing) return;
 
-    const threshold = 100;
-    if (Math.abs(dragOffset.x) > threshold) {
-      onSwipe(dragOffset.x > 0 ? "right" : "left");
+    // Calculate velocity for momentum-based swiping
+    let shouldSwipe = false;
+    let swipeDirection: "left" | "right" | null = null;
+
+    if (lastMove && dragStart) {
+      const timeDelta = lastMove.time - dragStart.time;
+      const velocity = Math.abs(dragOffset.x) / Math.max(timeDelta, 1);
+
+      // Swipe if either distance threshold OR velocity threshold is met
+      const distanceThreshold = 80;
+      const velocityThreshold = 0.5; // pixels per ms
+
+      if (
+        Math.abs(dragOffset.x) > distanceThreshold ||
+        velocity > velocityThreshold
+      ) {
+        shouldSwipe = true;
+        swipeDirection = dragOffset.x > 0 ? "right" : "left";
+      }
+    }
+
+    if (shouldSwipe && swipeDirection) {
+      onSwipe(swipeDirection);
     }
 
     setDragStart(null);
+    setLastMove(null);
     setDragOffset({ x: 0, y: 0 });
     setIsDragging(false);
   };
 
   const rotation = dragOffset.x * 0.1;
-  const opacity = isDragging ? 0.8 : 1;
+  const opacity = isDragging ? 0.9 : 1;
+  const scale = isDragging ? 1.02 : 1;
+
+  // Add resistance when dragging far
+  const resistance = Math.min(Math.abs(dragOffset.x) / 200, 1);
+  const resistanceMultiplier = 1 - resistance * 0.3;
 
   return (
     <div
@@ -111,11 +173,15 @@ export default function VisitorCard({
       onTouchEnd={handleTouchEnd}
     >
       <div
-        className={clsx(
-          "w-full h-full border-2 rounded-lg p-6 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing",
-          `border-primary bg-muted transform transition-all duration-300 ${isDragging ? "none" : "all 0.3s ease-out"}`,
-          `opacity-${opacity}`
-        )}
+        className="w-full h-full border-2 rounded-lg p-6 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing border-primary bg-muted"
+        style={{
+          transform: `translate(${dragOffset.x * resistanceMultiplier}px, ${dragOffset.y * resistanceMultiplier}px) rotate(${rotation}deg) scale(${scale})`,
+          opacity,
+          transition: isDragging ? "none" : "all 0.3s ease-out",
+          boxShadow: isDragging
+            ? `0 ${Math.abs(dragOffset.y) + 10}px ${Math.abs(dragOffset.x) + 20}px rgba(0, 0, 0, 0.3)`
+            : "0 4px 8px rgba(0, 0, 0, 0.1)",
+        }}
       >
         {/* Visitor Avatar */}
         {visitor.visitor.avatar_url && (
@@ -147,13 +213,25 @@ export default function VisitorCard({
         {/* Swipe Indicators */}
         {isDragging && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            {dragOffset.x > 50 && (
-              <div className="pixel-font text-2xl font-bold text-primary">
+            {dragOffset.x > 30 && (
+              <div
+                className="pixel-font text-2xl font-bold text-primary transition-all duration-200"
+                style={{
+                  opacity: Math.min(Math.abs(dragOffset.x) / 100, 1),
+                  transform: `scale(${Math.min(Math.abs(dragOffset.x) / 100, 1.2)})`,
+                }}
+              >
                 🎃 TrETH
               </div>
             )}
-            {dragOffset.x < -50 && (
-              <div className="pixel-font text-2xl font-bold text-destructive">
+            {dragOffset.x < -30 && (
+              <div
+                className="pixel-font text-2xl font-bold text-destructive transition-all duration-200"
+                style={{
+                  opacity: Math.min(Math.abs(dragOffset.x) / 100, 1),
+                  transform: `scale(${Math.min(Math.abs(dragOffset.x) / 100, 1.2)})`,
+                }}
+              >
                 👻 Trick
               </div>
             )}
