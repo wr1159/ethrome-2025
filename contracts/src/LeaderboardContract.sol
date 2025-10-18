@@ -77,8 +77,8 @@ contract LeaderboardContract is Ownable {
         return playerStats[player];
     }
 
-    // Fund the prize pool (owner only)
-    function fundPrizePool() public payable onlyOwner {
+    // Fund the prize pool
+    function fundPrizePool() public payable {
         require(msg.value > 0, "Must send ETH");
         prizePool += msg.value;
         emit PrizePoolFunded(msg.value);

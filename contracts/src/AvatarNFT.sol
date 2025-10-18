@@ -41,7 +41,6 @@ contract AvatarNFT is ERC721, Ownable {
         string memory tokenURI
     ) public returns (uint256) {
         require(fid > 0, "Invalid FID");
-        require(fidToTokenId[fid] == 0, "Avatar already minted for this FID");
 
         uint256 tokenId = _tokenIdCounter;
         _tokenIdCounter++;
