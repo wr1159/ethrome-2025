@@ -34,6 +34,9 @@ export default function NeighborhoodScreen({
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const housesPerPage = 2; // Show 2 houses per page
+  console.log("currentPage", currentPage);
 
   // Fetch players on component mount
   useEffect(() => {
@@ -56,6 +59,7 @@ export default function NeighborhoodScreen({
           //   setPlayers(otherPlayers);
           console.log("data.players", data.players);
           setPlayers(data.players);
+          setCurrentPage(0); // Reset to first page when new data loads
         } else {
           throw new Error(data.error || "Failed to fetch players");
         }
@@ -74,6 +78,20 @@ export default function NeighborhoodScreen({
 
   const handleHouseClick = (player: Player) => {
     onVisitPlayer(player);
+  };
+
+  // Pagination logic
+  const totalPages = Math.ceil(players.length / housesPerPage);
+  const startIndex = currentPage * housesPerPage;
+  const endIndex = startIndex + housesPerPage;
+  const currentPlayers = players.slice(startIndex, endIndex);
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(0, prev - 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1));
   };
 
   if (loading) {
@@ -124,7 +142,7 @@ export default function NeighborhoodScreen({
       />
 
       {/* Header */}
-      <div className="relative z-10 p-4">
+      <div className="relative z-20 p-4 pt-6">
         <div className="flex justify-between items-center mb-4">
           <h1
             className="pixel-font text-2xl"
@@ -136,6 +154,32 @@ export default function NeighborhoodScreen({
             Back Home
           </Button>
         </div>
+        {/* Navigation Arrows */}
+        {totalPages > 1 && (
+          <div className="absolute flex items-center justify-center gap-4">
+            <Button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 0}
+              variant="secondary"
+              className="pixel-font w-fit text-sm items-center"
+            >
+              ← Previous
+            </Button>
+
+            <div className="pixel-font px-3 py-1 rounded bg-muted text-foreground">
+              Street {currentPage + 1} of {totalPages}
+            </div>
+
+            <Button
+              onClick={handleNextPage}
+              disabled={currentPage >= totalPages - 1}
+              variant="secondary"
+              className="pixel-font w-fit text-sm items-center"
+            >
+              Next →
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Houses Container */}
@@ -144,9 +188,11 @@ export default function NeighborhoodScreen({
           {/* House 1 */}
           <div className="relative">
             <button
-              onClick={() => players[0] && handleHouseClick(players[0])}
+              onClick={() =>
+                currentPlayers[0] && handleHouseClick(currentPlayers[0])
+              }
               className="relative group"
-              disabled={!players[0]}
+              disabled={!currentPlayers[0]}
             >
               <img
                 src="/game/house1.png"
@@ -156,7 +202,7 @@ export default function NeighborhoodScreen({
               />
 
               {/* Player Info Overlay */}
-              {players[0] && (
+              {currentPlayers[0] && (
                 <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-center">
                   <div
                     className="pixel-font text-xs px-2 py-1 rounded"
@@ -165,17 +211,18 @@ export default function NeighborhoodScreen({
                       color: "var(--foreground)",
                     }}
                   >
-                    <Name address={players[0].address as `0x${string}`} />
+                    <Name
+                      address={currentPlayers[0].address as `0x${string}`}
+                    />
                   </div>
 
                   {/* Avatar */}
-                  {players[0].avatar_url && (
+                  {currentPlayers[0].avatar_url && (
                     <img
-                      src={players[0].avatar_url}
-                      alt={`${players[0].username}'s avatar`}
-                      className="size-16 mx-auto mt-1 border-2 rounded md:size-36"
+                      src={currentPlayers[0].avatar_url}
+                      alt={`${currentPlayers[0].username}'s avatar`}
+                      className="size-16 mx-auto mt-1 border-2 rounded md:size-36 border-primaryry"
                       style={{
-                        borderColor: "var(--primary)",
                         imageRendering: "pixelated",
                       }}
                     />
@@ -188,19 +235,21 @@ export default function NeighborhoodScreen({
           {/* House 2 */}
           <div className="relative">
             <button
-              onClick={() => players[1] && handleHouseClick(players[1])}
+              onClick={() =>
+                currentPlayers[1] && handleHouseClick(currentPlayers[1])
+              }
               className="relative group"
-              disabled={!players[1]}
+              disabled={!currentPlayers[1]}
             >
               <img
-                src="/game/house2.png"
+                src="/game/house3.png"
                 alt="House 2"
                 className="size-32 object-contain transition-transform group-hover:scale-105 md:size-64"
                 style={{ imageRendering: "pixelated" }}
               />
 
               {/* Player Info Overlay */}
-              {players[1] && (
+              {currentPlayers[1] && (
                 <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-center">
                   <div
                     className="pixel-font text-xs px-2 py-1 rounded"
@@ -209,14 +258,16 @@ export default function NeighborhoodScreen({
                       color: "var(--foreground)",
                     }}
                   >
-                    <Name address={players[1].address as `0x${string}`} />
+                    <Name
+                      address={currentPlayers[1].address as `0x${string}`}
+                    />
                   </div>
 
                   {/* Avatar */}
-                  {players[1].avatar_url && (
+                  {currentPlayers[1].avatar_url && (
                     <img
-                      src={players[1].avatar_url}
-                      alt={`${players[1].username}'s avatar`}
+                      src={currentPlayers[1].avatar_url}
+                      alt={`${currentPlayers[1].username}'s avatar`}
                       className="size-16 mx-auto mt-1 border-2 rounded md:size-36"
                       style={{
                         borderColor: "var(--primary)",
@@ -233,7 +284,9 @@ export default function NeighborhoodScreen({
         {/* Instructions */}
         <div className="mt-8 pixel-font text-center max-w-md text-primary">
           <p>Click on a house to visit that player!</p>
-          <p>Players: {players.length} available</p>
+          <p>
+            Showing {currentPlayers.length} of {players.length} players
+          </p>
         </div>
       </div>
     </div>
