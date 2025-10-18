@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import AvatarCreator from "./avatar-creator";
+import NeighborhoodScreen from "./neighborhood-screen";
 import { GameScreen } from "~/types";
 import { Button } from "../ui/button";
 
@@ -17,6 +18,7 @@ export default function GameRouter({
   const [avatarImageData, setAvatarImageData] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string>("");
+  const [selectedPlayer, setSelectedPlayer] = useState<any>(null);
 
   const handleAvatarSave = async (imageData: string, avatarUrl?: string) => {
     setIsSaving(true);
@@ -45,6 +47,16 @@ export default function GameRouter({
   };
 
   const handleAvatarCancel = () => {
+    onScreenChange("home");
+  };
+
+  const handleVisitPlayer = (player: any) => {
+    setSelectedPlayer(player);
+    // TODO: Implement visit dialog
+    console.log("Visiting player:", player);
+  };
+
+  const handleBackToHome = () => {
     onScreenChange("home");
   };
 
@@ -112,10 +124,25 @@ export default function GameRouter({
             </div>
           )}
 
-          <Button onClick={() => onScreenChange("avatar-creator")}>
-            {avatarImageData ? "Edit Avatar" : "Create Avatar"}
-          </Button>
+          <div className="flex gap-4">
+            <Button onClick={() => onScreenChange("avatar-creator")}>
+              {avatarImageData ? "Edit Avatar" : "Create Avatar"}
+            </Button>
+            <Button
+              onClick={() => onScreenChange("neighborhood")}
+              variant="secondary"
+            >
+              Visit Neighborhood
+            </Button>
+          </div>
         </div>
+      );
+    case "neighborhood":
+      return (
+        <NeighborhoodScreen
+          onBack={handleBackToHome}
+          onVisitPlayer={handleVisitPlayer}
+        />
       );
     default:
       return (
