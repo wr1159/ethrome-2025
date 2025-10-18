@@ -14,6 +14,19 @@ verbosity = 0
 baseSepolia = "https://sepolia.base.org"
 baseMainnet = "https://mainnet.base.org"
 
+BASESCAN_API_KEY = "KEY_HERE"
+
 [etherscan]
-baseSepolia = { key = "${BASESCAN_API_KEY}", url = "https://api-sepolia.basescan.org/api" }
-baseMainnet = { key = "${BASESCAN_API_KEY}", url = "https://api.basescan.org/api" }
+baseSepolia = { key = "${BASESCAN_API_KEY}", url = "https://api.etherscan.io/v2/api?chainid=84532" }
+baseMainnet = { key = "${BASESCAN_API_KEY}", url = "https://api.etherscan.io/v2/api?chainid=8453" }
+
+# Network configurations
+[profile.baseSepolia]
+rpc_url = "https://sepolia.base.org"
+chain_id = 84532
+private_key = "${PRIVATE_KEY}"
+
+[profile.baseMainnet]
+rpc_url = "https://mainnet.base.org"
+chain_id = 8453
+private_key = "${PRIVATE_KEY}"
