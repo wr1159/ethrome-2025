@@ -73,10 +73,8 @@ export default function GameRouter({
           className="flex flex-col items-center justify-center min-h-screen"
           style={{ backgroundColor: "var(--background)" }}
         >
-          <h1
-            className="pixel-font mb-4"
-            style={{ color: "var(--foreground)" }}
-          >
+          <img src="/icon.png" alt="icon" className="w-full h-full" />
+          <h1 className="pixel-font mb-4 text-foreground text-center">
             Trick or TrETH
           </h1>
           <p
@@ -122,7 +120,7 @@ export default function GameRouter({
             </div>
           )}
 
-          <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
             <Button onClick={() => onScreenChange("avatar-creator")}>
               {avatarImageData ? "Edit Avatar" : "Create Avatar"}
             </Button>
@@ -153,7 +151,7 @@ export default function GameRouter({
     default:
       return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-orange-100">
-          <h1 className="text-3xl font-bold text-orange-800 mb-4">
+          <h1 className="text-3xl font-bold text-orange-800 mb-4 text-center">
             Trick or TrETH
           </h1>
           <p className="text-lg text-orange-700 mb-8">
