@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import GameRouter from "~/components/game/GameRouter";
+import GameRouter from "~/components/game/game-router";
 import { GameScreen } from "~/types";
 
 const Demo = dynamic(() => import("~/components/farcaster-demo/demo"), {

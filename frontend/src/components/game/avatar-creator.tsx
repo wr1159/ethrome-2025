@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState, useCallback } from "react";
 import { Button } from "~/components/ui/button";
 import { PixelColor, PixelCanvas } from "~/types";
 
-// Halloween color palette
+// Primary paint colors using CSS variables
 const PIXEL_COLORS: PixelColor[] = [
   { name: "Orange", hex: "#FF6B2B", value: 1 },
   { name: "Black", hex: "#000000", value: 2 },
@@ -192,13 +192,19 @@ export default function AvatarCreator({
   };
 
   return (
-    <div className="flex flex-col items-center p-4 bg-orange-100 min-h-screen">
-      <h1 className="text-2xl font-bold mb-4 text-orange-800">
+    <div
+      className="flex flex-col items-center p-4 min-h-screen"
+      style={{ backgroundColor: "var(--background)" }}
+    >
+      <h1 className="pixel-font mb-4" style={{ color: "var(--foreground)" }}>
         Create Your Avatar
       </h1>
 
       {/* Canvas */}
-      <div className="mb-4 border-2 border-orange-600 rounded-lg overflow-hidden">
+      <div
+        className="mb-4 border-2 rounded-lg overflow-hidden"
+        style={{ borderColor: "var(--primary)" }}
+      >
         <canvas
           ref={canvasRef}
           className="cursor-crosshair"
@@ -211,7 +217,9 @@ export default function AvatarCreator({
 
       {/* Color Palette */}
       <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-2 text-orange-800">Colors</h3>
+        <h3 className="pixel-font mb-2" style={{ color: "var(--foreground)" }}>
+          Colors
+        </h3>
         <div className="flex flex-wrap gap-2 justify-center">
           {PIXEL_COLORS.map((color) => (
             <button
@@ -231,27 +239,23 @@ export default function AvatarCreator({
 
       {/* Tools */}
       <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-2 text-orange-800">Tools</h3>
+        <h3 className="pixel-font mb-2" style={{ color: "var(--foreground)" }}>
+          Tools
+        </h3>
         <div className="flex gap-2">
           <Button
-            variant={tool === "draw" ? "default" : "outline"}
+            variant={tool === "draw" ? "default" : "secondary"}
             onClick={() => setTool("draw")}
-            className="bg-orange-600 hover:bg-orange-700"
           >
             Draw
           </Button>
           <Button
-            variant={tool === "erase" ? "default" : "outline"}
+            variant={tool === "erase" ? "default" : "secondary"}
             onClick={() => setTool("erase")}
-            className="bg-gray-600 hover:bg-gray-700"
           >
             Erase
           </Button>
-          <Button
-            variant="outline"
-            onClick={clearCanvas}
-            className="bg-red-600 hover:bg-red-700 text-white"
-          >
+          <Button variant="destructive" onClick={clearCanvas}>
             Clear
           </Button>
         </div>
@@ -259,23 +263,19 @@ export default function AvatarCreator({
 
       {/* Actions */}
       <div className="flex gap-4">
-        <Button
-          onClick={handleSave}
-          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
-        >
+        <Button onClick={handleSave} variant="default">
           Save Avatar
         </Button>
-        <Button
-          onClick={onCancel}
-          variant="outline"
-          className="bg-gray-600 hover:bg-gray-700 text-white"
-        >
+        <Button onClick={onCancel} variant="secondary">
           Cancel
         </Button>
       </div>
 
       {/* Instructions */}
-      <div className="mt-4 text-sm text-orange-700 text-center max-w-md">
+      <div
+        className="mt-4 pixel-font text-center max-w-md"
+        style={{ color: "var(--muted-foreground)", fontSize: "8px" }}
+      >
         <p>• Click and drag to draw pixels</p>
         <p>• Select a color from the palette</p>
         <p>• Use Erase tool to remove pixels</p>

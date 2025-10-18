@@ -123,28 +123,28 @@ src/app/
   
 src/components/
   game/
-    HomeScreen.tsx - User's house view
+    home-screen.tsx - User's house view
       - Display visitors with avatar + message
       - Swipe interface (TinderCard or custom)
       - "Exit House" button
       
-    NeighborhoodScreen.tsx - Visit other houses
+    neighborhood-screen.tsx - Visit other houses
       - Grid of houses with player avatars/ENS
-      - Tap house → VisitDialog
+      - Tap house → visit-dialog
       
-    VisitDialog.tsx
+    visit-dialog.tsx
       - Show homeowner avatar & address/ENS
       - Input for one-liner message
       - "Send" button
       
-    AvatarCreator.tsx - Pixel art editor
-      - 60x100px canvas
+    avatar-creator.tsx - Pixel art editor
+      - 30x50px canvas
       - 10-color palette (Halloween colors)
       - Pixel-by-pixel drawing
       - Clear button
       - "Mint Avatar" button → upload & mint flow
       
-    LeaderboardScreen.tsx - Top players
+    leaderboard-screen.tsx - Top players
       
   ui/ (existing shadcn components)
 ```
@@ -158,15 +158,16 @@ src/components/
 
 ### 5. Pixel Art Editor Implementation
 
-**Core Logic** (`src/components/game/AvatarCreator.tsx`):
+**Core Logic** (`src/components/game/avatar-creator.tsx`):
 
 ```typescript
-- Use HTML5 Canvas with 60x100 grid
+- Use HTML5 Canvas with 30x50 grid
 - State: pixels[][] array of color values
 - Click handler: set pixel color
 - 10-color palette: [orange, black, purple, white, green, red, yellow, brown, gray, dark-purple]
 - Export as PNG: canvas.toDataURL()
 - Tools: Draw (default), Erase (set to transparent)
+- 8-bit pixel font styling with Press Start 2P
 ```
 
 **Reach Goal Tools**: Fill bucket, undo/redo
