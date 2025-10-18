@@ -330,7 +330,7 @@ forge script script/Deploy.s.sol --rpc-url $BASE_SEPOLIA_RPC_URL --broadcast
 ## Testing Checklist
 
 - [x] Smart contract tests (AvatarNFT, LeaderboardContract, Integration)
-- [ ] Quick Auth login flow
+- [x] Install supabase
 - [ ] Create & upload avatar
 - [ ] Mint NFT (with & without wallet)
 - [ ] View neighborhood
