@@ -37,9 +37,9 @@ export default function AvatarCreator({
   isSaving = false,
 }: AvatarCreatorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { address, chainId } = useAccount();
+  const { address } = useAccount();
   const frameContext = useFrameContext();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const user = (frameContext?.context as any)?.user ?? null;
   const fid = user?.fid ?? 1;
   const username = user?.username ?? "dummy";

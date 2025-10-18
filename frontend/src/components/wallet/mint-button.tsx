@@ -1,8 +1,9 @@
 import { useMemo } from "react";
-import { useAccount, useWriteContract } from "wagmi";
+import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
 import { useCapabilities, useWriteContracts } from "wagmi/experimental";
 import { avatarNftAbi, avatarNftAddress } from "~/generated";
 import { Button } from "../ui/button";
+import { baseSepolia } from "wagmi/chains";
 
 interface MintButtonProps {
   fid: number;
@@ -11,6 +12,7 @@ interface MintButtonProps {
 export default function MintButton({ fid, tokenURI }: MintButtonProps) {
   const account = useAccount();
   const { writeContracts } = useWriteContracts();
+  const { switchChain, isPending } = useSwitchChain();
   const { writeContract } = useWriteContract();
   const { data: availableCapabilities } = useCapabilities({
     account: account.address,
@@ -35,6 +37,10 @@ export default function MintButton({ fid, tokenURI }: MintButtonProps) {
   }, [availableCapabilities, account.chainId]);
 
   const handleSponsoredMint = async () => {
+    if (account.chainId !== baseSepolia.id) {
+      await switchChain({ chainId: baseSepolia.id });
+    }
+
     try {
       const contractAddress =
         avatarNftAddress[account.chainId as keyof typeof avatarNftAddress];
@@ -80,7 +86,7 @@ export default function MintButton({ fid, tokenURI }: MintButtonProps) {
 
       // Fallback to regular writeContract
       console.log("Attempting regular transaction with writeContract...");
-      const result = await writeContract({
+      await writeContract({
         address: contractAddress,
         abi: avatarNftAbi,
         functionName: "mint",

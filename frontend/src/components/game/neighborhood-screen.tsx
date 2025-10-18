@@ -23,6 +23,7 @@ export default function NeighborhoodScreen({
   onBack,
 }: NeighborhoodScreenProps) {
   const frameContext = useFrameContext();
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const user = (frameContext?.context as any)?.user ?? null;
   const currentFid = user?.fid ?? -1;
 

@@ -5,10 +5,6 @@ import dynamic from "next/dynamic";
 import GameRouter from "~/components/game/game-router";
 import { GameScreen } from "~/types";
 
-const Demo = dynamic(() => import("~/components/farcaster-demo/demo"), {
-  ssr: false,
-});
-
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<GameScreen>("home");
   const [showGame, setShowGame] = useState(false);
@@ -37,12 +33,6 @@ export default function App() {
           className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-lg text-xl font-semibold"
         >
           Start Game
-        </button>
-        <button
-          onClick={() => setShowGame(false)}
-          className="bg-gray-600 hover:bg-gray-700 text-white px-8 py-4 rounded-lg text-xl font-semibold"
-        >
-          Demo Mode
         </button>
       </div>
       {/* {!showGame && (
