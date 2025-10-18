@@ -3,6 +3,8 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { Button } from "~/components/ui/button";
 import { PixelColor, PixelCanvas } from "~/types";
+import { useAccount } from "wagmi";
+import { useFrameContext } from "../providers/frame-provider";
 
 // Primary paint colors using CSS variables
 const PIXEL_COLORS: PixelColor[] = [
@@ -34,6 +36,12 @@ export default function AvatarCreator({
   isSaving = false,
 }: AvatarCreatorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { address } = useAccount();
+  const frameContext = useFrameContext();
+  const user = (frameContext?.context as any)?.user ?? null;
+  const fid = user?.fid ?? -1;
+  const username = user?.username ?? "dummy";
+
   const [selectedColor, setSelectedColor] = useState<PixelColor>(
     PIXEL_COLORS[0]
   );
@@ -189,6 +197,17 @@ export default function AvatarCreator({
   };
 
   const handleSave = async () => {
+    // Validate authentication
+    if (!fid) {
+      throw new Error(
+        "Please connect your Farcaster account to create an avatar"
+      );
+    }
+
+    if (!address) {
+      throw new Error("Please connect your wallet to create an avatar");
+    }
+
     const imageData = exportImage();
 
     try {
@@ -200,7 +219,9 @@ export default function AvatarCreator({
         },
         body: JSON.stringify({
           imageData: imageData,
-          fid: 1, // TODO: Get from auth context
+          fid: fid,
+          address: address,
+          username: username,
         }),
       });
 
@@ -229,6 +250,25 @@ export default function AvatarCreator({
       <h1 className="pixel-font mb-4" style={{ color: "var(--foreground)" }}>
         Create Your Avatar
       </h1>
+
+      {/* Authentication Status */}
+      <div
+        className="mb-4 p-3 rounded-lg"
+        style={{ backgroundColor: "var(--muted)" }}
+      >
+        <div
+          className="pixel-font"
+          style={{ fontSize: "8px", color: "var(--foreground)" }}
+        >
+          <div>FID: {fid ? `#${fid}` : "Not connected"}</div>
+          <div>
+            Address:{" "}
+            {address
+              ? `${address.slice(0, 6)}...${address.slice(-4)}`
+              : "Not connected"}
+          </div>
+        </div>
+      </div>
 
       {/* Canvas */}
       <div
@@ -297,9 +337,13 @@ export default function AvatarCreator({
           onClick={handleSave}
           variant="default"
           isLoading={isSaving}
-          disabled={isSaving}
+          disabled={isSaving || !fid || !address}
         >
-          {isSaving ? "Saving..." : "Save Avatar"}
+          {isSaving
+            ? "Saving..."
+            : !fid || !address
+            ? "Connect Account First"
+            : "Save Avatar"}
         </Button>
         <Button onClick={onCancel} variant="secondary">
           Cancel

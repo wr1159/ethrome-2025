@@ -3,11 +3,11 @@ import { supabaseAdmin } from "~/lib/supabase";
 
 export async function POST(request: NextRequest) {
   try {
-    const { imageData, fid } = await request.json();
+    const { imageData, fid, address, username } = await request.json();
 
-    if (!imageData || !fid) {
+    if (!imageData || !fid || !address || !username) {
       return NextResponse.json(
-        { error: "Missing imageData or fid" },
+        { error: "Missing imageData, fid, address, or username" },
         { status: 400 }
       );
     }
@@ -50,9 +50,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Update player record in database
+    // Create or update player record in database
     const { error: dbError } = await supabaseAdmin.from("players").upsert({
       fid: fid,
+      address: address,
+      username: username,
       avatar_url: urlData.publicUrl,
     });
 
