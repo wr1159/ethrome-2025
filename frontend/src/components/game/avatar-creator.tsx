@@ -253,7 +253,7 @@ export default function AvatarCreator({
 
   return (
     <div
-      className="flex flex-col items-center p-4 min-h-screen"
+      className="flex flex-col items-center p-4 max-h-screen"
       style={{ backgroundColor: "var(--background)" }}
     >
       <h1 className="pixel-font mb-4" style={{ color: "var(--foreground)" }}>
@@ -361,17 +361,6 @@ export default function AvatarCreator({
           fid={fid}
           tokenURI={`https://trick-or-treth.vercel.app/api/avatar/${fid}.png}`}
         />
-      </div>
-
-      {/* Instructions */}
-      <div
-        className="mt-4 pixel-font text-center max-w-md"
-        style={{ color: "var(--muted-foreground)", fontSize: "8px" }}
-      >
-        <p>• Click and drag to draw pixels</p>
-        <p>• Select a color from the palette</p>
-        <p>• Use Erase tool to remove pixels</p>
-        <p>• Create your unique Halloween avatar!</p>
       </div>
 
       {/* Share Dialog */}
