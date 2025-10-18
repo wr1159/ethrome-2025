@@ -73,7 +73,7 @@ export default function GameRouter({
           className="flex flex-col items-center justify-center min-h-screen"
           style={{ backgroundColor: "var(--background)" }}
         >
-          <img src="/icon.png" alt="icon" className="w-full h-full" />
+          <img src="/icon.png" alt="icon" className="w-fit md:size-32" />
           <h1 className="pixel-font mb-4 text-foreground text-center">
             Trick or TrETH
           </h1>

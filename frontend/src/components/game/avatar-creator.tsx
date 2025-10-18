@@ -6,6 +6,7 @@ import { PixelColor } from "~/types";
 import { useAccount } from "wagmi";
 import { useFrameContext } from "../providers/frame-provider";
 import MintButton from "../wallet/mint-button";
+import ShareAvatarDialog from "./share-avatar-dialog";
 import { toast } from "sonner";
 
 // Primary paint colors using CSS variables
@@ -55,6 +56,7 @@ export default function AvatarCreator({
   );
   const [isDrawing, setIsDrawing] = useState(false);
   const [tool, setTool] = useState<"draw" | "erase">("draw");
+  const [showShareDialog, setShowShareDialog] = useState(false);
 
   // Initialize canvas
   useEffect(() => {
@@ -239,6 +241,9 @@ export default function AvatarCreator({
       console.log("Avatar uploaded successfully:", result);
       toast.success("Avatar saved successfully! 🎃");
       onSave(imageData, result.avatarUrl);
+
+      // Show share dialog after successful save
+      setShowShareDialog(true);
     } catch (error) {
       console.error("Failed to save avatar:", error);
       // The error will be handled by the parent component
@@ -368,6 +373,14 @@ export default function AvatarCreator({
         <p>• Use Erase tool to remove pixels</p>
         <p>• Create your unique Halloween avatar!</p>
       </div>
+
+      {/* Share Dialog */}
+      <ShareAvatarDialog
+        isOpen={showShareDialog}
+        onClose={() => setShowShareDialog(false)}
+        fid={fid}
+        username={username}
+      />
     </div>
   );
 }
