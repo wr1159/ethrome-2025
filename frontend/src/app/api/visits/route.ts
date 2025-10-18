@@ -59,8 +59,6 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const homeownerFid = searchParams.get("homeownerFid");
-    console.log("homeownerFid", homeownerFid);
-    console.log("searchParams", searchParams);
     if (!homeownerFid) {
       return NextResponse.json(
         { error: "Missing homeownerFid parameter" },
