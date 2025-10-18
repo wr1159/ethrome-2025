@@ -6,10 +6,11 @@ const ROOT_URL =
 
 export const minikitConfig = {
   accountAssociation: {
-    // this will be added in step 5
-    header: "",
-    payload: "",
-    signature: "",
+    header:
+      "eyJmaWQiOjQ2NTU0NiwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDVCRDA2NEFlNUYxMUMwNzgxQUQyMjU2OEQzMWNDQzYzOEREMkNmY2IifQ",
+    payload: "eyJkb21haW4iOiJ0cmljay1vci10cmV0aC52ZXJjZWwuYXBwIn0",
+    signature:
+      "1lSoXXA16NWfXOPrD6rct3JSfATLG8l93GASY86PSlIeHLKauRnT31BEoLmBC/hzn0DYs/xqXHFsCBFQWRTyxxs=",
   },
   miniapp: {
     version: "1",
