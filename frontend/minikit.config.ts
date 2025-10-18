@@ -15,7 +15,7 @@ export const minikitConfig = {
   miniapp: {
     version: "1",
     name: "Trick or TrETH",
-    subtitle: "Put on your best costume and visit your neighbors!",
+    subtitle: "Put on your best costume!",
     description:
       "A Halloween social activity where you create pixel avatars, visit neighbors, and go trick or trething!",
     screenshotUrls: [`${ROOT_URL}/screenshot.png`],
@@ -27,10 +27,9 @@ export const minikitConfig = {
     primaryCategory: "social",
     tags: ["halloween", "social", "game", "pixel", "avatars"],
     heroImageUrl: `${ROOT_URL}/hero.png`,
-    tagline: "Put on your best costume and visit your neighbors!",
+    tagline: "Put on your best costume!",
     ogTitle: "Trick or TrETH",
-    ogDescription:
-      "A Halloween social activity where you create pixel avatars, visit neighbors, and go trick or trething!",
+    ogDescription: "Put on your best costume and go trick or trething!",
     ogImageUrl: `${ROOT_URL}/hero.png`,
   },
 } as const;
