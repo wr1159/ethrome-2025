@@ -6,6 +6,7 @@ import NeighborhoodScreen from "./neighborhood-screen";
 import HomeScreen from "./visit-screen";
 import { GameScreen } from "~/types";
 import { Button } from "../ui/button";
+import { useFrameContext } from "../providers/frame-provider";
 
 interface GameRouterProps {
   currentScreen: GameScreen;
@@ -19,6 +20,9 @@ export default function GameRouter({
   const [avatarImageData, setAvatarImageData] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string>("");
+  const frameContext = useFrameContext();
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  const fid = (frameContext?.context as any)?.user?.fid ?? 1;
 
   const handleAvatarSave = async (imageData: string, avatarUrl?: string) => {
     setIsSaving(true);
@@ -84,14 +88,14 @@ export default function GameRouter({
             Welcome to your Halloween neighborhood!
           </p>
 
-          {avatarImageData && (
-            <div className="mb-6">
-              <p
-                className="pixel-font mb-2"
-                style={{ color: "var(--foreground)", fontSize: "8px" }}
-              >
-                Your Avatar:
-              </p>
+          <div className="mb-6">
+            <p
+              className="pixel-font mb-2"
+              style={{ color: "var(--foreground)", fontSize: "8px" }}
+            >
+              Your Avatar:
+            </p>
+            {avatarImageData ? (
               <img
                 src={avatarImageData}
                 alt="Your avatar"
@@ -103,8 +107,20 @@ export default function GameRouter({
                 width="120"
                 height="200"
               />
-            </div>
-          )}
+            ) : (
+              <img
+                src={`/api/avatar/${fid}.png`}
+                alt="Your avatar"
+                className="border-2 rounded-lg"
+                style={{
+                  borderColor: "var(--primary)",
+                  imageRendering: "pixelated",
+                }}
+                width="120"
+                height="200"
+              />
+            )}
+          </div>
 
           {saveMessage && (
             <div
