@@ -132,6 +132,7 @@ export default function AvatarCreator({
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
     setIsDrawing(true);
     const { x, y } = getMousePosition(e);
     if (x >= 0 && x < CANVAS_WIDTH && y >= 0 && y < CANVAS_HEIGHT) {
@@ -141,6 +142,7 @@ export default function AvatarCreator({
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing) return;
+    e.preventDefault();
 
     const { x, y } = getMousePosition(e);
     if (x >= 0 && x < CANVAS_WIDTH && y >= 0 && y < CANVAS_HEIGHT) {
@@ -162,6 +164,43 @@ export default function AvatarCreator({
       }
       return newPixels;
     });
+  };
+
+  // Touch event handlers for mobile
+  const getTouchPosition = (touch: React.Touch) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: -1, y: -1 };
+
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.floor((touch.clientX - rect.left) / PIXEL_SIZE);
+    const y = Math.floor((touch.clientY - rect.top) / PIXEL_SIZE);
+
+    return { x, y };
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    setIsDrawing(true);
+    const touch = e.touches[0];
+    const { x, y } = getTouchPosition(touch);
+    if (x >= 0 && x < CANVAS_WIDTH && y >= 0 && y < CANVAS_HEIGHT) {
+      drawPixel(x, y);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+    e.preventDefault();
+
+    const touch = e.touches[0];
+    const { x, y } = getTouchPosition(touch);
+    if (x >= 0 && x < CANVAS_WIDTH && y >= 0 && y < CANVAS_HEIGHT) {
+      drawPixel(x, y);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDrawing(false);
   };
 
   const clearCanvas = () => {
@@ -254,7 +293,11 @@ export default function AvatarCreator({
   return (
     <div
       className="flex flex-col items-center p-4 max-h-screen"
-      style={{ backgroundColor: "var(--background)" }}
+      style={{
+        backgroundColor: "var(--background)",
+        touchAction: "pan-y",
+        overflow: "auto",
+      }}
     >
       <h1 className="pixel-font mb-4" style={{ color: "var(--foreground)" }}>
         Create Your Avatar
@@ -291,6 +334,15 @@ export default function AvatarCreator({
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          style={{
+            touchAction: "none",
+            userSelect: "none",
+            WebkitUserSelect: "none",
+            WebkitTouchCallout: "none",
+          }}
         />
       </div>
 
