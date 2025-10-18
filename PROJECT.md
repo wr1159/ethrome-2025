@@ -332,13 +332,12 @@ forge script script/Deploy.s.sol --rpc-url $BASE_SEPOLIA_RPC_URL --broadcast
 
 - [x] Smart contract tests (AvatarNFT, LeaderboardContract, Integration)
 - [x] Install supabase
-- [ ] Create & upload avatar
-- [ ] Mint NFT (with & without wallet)
+- [x] Create & upload avatar
+- [x] Mint NFT (with & without wallet)
 - [ ] View neighborhood
 - [ ] Visit house & send message
 - [ ] Receive visit & swipe
 - [ ] Leaderboard updates
-- [ ] Mobile responsive (Warpcast mini app)
 
 ## Files to Reference
 
