@@ -5,8 +5,8 @@ export const METADATA = {
   name: "Trick or TrETH",
   description:
     "A Halloween social game where you create pixel avatars, visit neighbors, and earn ETH rewards!",
-  bannerImageUrl: "/hero.png",
-  iconImageUrl: "/icon.png",
+  bannerImageUrl: `${process.env.NEXT_PUBLIC_URL}/hero.png`,
+  iconImageUrl: `${process.env.NEXT_PUBLIC_URL}/icon.png`,
   // homeUrl: process.env.NEXT_PUBLIC_URL ?? "https://trick-or-treth.vercel.app",
   homeUrl: "https://trick-or-treth.vercel.app",
   splashBackgroundColor: "#FF6B2B", // Halloween orange
