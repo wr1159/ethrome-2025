@@ -1,0 +1,12 @@
+---
+alwaysApply: true
+---
+# IMPORTANT
+
+# Always read PROJECT.md before writing any code
+
+# After adding a major feature or completing a milestone, update PROJECT.md
+
+# Document the logical flows and database schema in PROJECT.md
+
+# For new migrations, make sure to add them to the same file
