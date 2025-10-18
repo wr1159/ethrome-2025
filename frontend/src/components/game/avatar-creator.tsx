@@ -2,9 +2,10 @@
 
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { Button } from "~/components/ui/button";
-import { PixelColor, PixelCanvas } from "~/types";
+import { PixelColor } from "~/types";
 import { useAccount } from "wagmi";
 import { useFrameContext } from "../providers/frame-provider";
+import MintButton from "../wallet/mint-button";
 
 // Primary paint colors using CSS variables
 const PIXEL_COLORS: PixelColor[] = [
@@ -36,10 +37,10 @@ export default function AvatarCreator({
   isSaving = false,
 }: AvatarCreatorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { address } = useAccount();
+  const { address, chainId } = useAccount();
   const frameContext = useFrameContext();
   const user = (frameContext?.context as any)?.user ?? null;
-  const fid = user?.fid ?? -1;
+  const fid = user?.fid ?? 1;
   const username = user?.username ?? "dummy";
 
   const [selectedColor, setSelectedColor] = useState<PixelColor>(
@@ -342,12 +343,16 @@ export default function AvatarCreator({
           {isSaving
             ? "Saving..."
             : !fid || !address
-            ? "Connect Account First"
-            : "Save Avatar"}
+              ? "Connect Account First"
+              : "Save Avatar"}
         </Button>
         <Button onClick={onCancel} variant="secondary">
           Cancel
         </Button>
+        <MintButton
+          fid={fid}
+          tokenURI={`https://trick-or-treth.vercel.app/api/avatar/${fid}.png}`}
+        />
       </div>
 
       {/* Instructions */}
