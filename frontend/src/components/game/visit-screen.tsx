@@ -1,10 +1,23 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Button } from "~/components/ui/button";
 import { useFrameContext } from "../providers/frame-provider";
 import VisitorCard from "./visitor-card";
 import { toast } from "sonner";
+import { useWriteContracts } from "wagmi/experimental";
+import {
+  useAccount,
+  useCapabilities,
+  useSwitchChain,
+  useWriteContract,
+} from "wagmi";
+import {
+  leaderboardContractAbi,
+  leaderboardContractAddress,
+} from "~/generated";
+import { baseSepolia } from "wagmi/chains";
+import { parseEther } from "viem";
 
 interface Visitor {
   id: string;
@@ -32,6 +45,8 @@ export default function HomeScreen({
   onVisitNeighborhood,
 }: HomeScreenProps) {
   const frameContext = useFrameContext();
+  const account = useAccount();
+  const { switchChain, isPending } = useSwitchChain();
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const user = (frameContext?.context as any)?.user ?? null;
   const currentFid = user?.fid ?? 0;
@@ -75,6 +90,79 @@ export default function HomeScreen({
     }
   }, [currentFid]);
 
+  const { writeContracts } = useWriteContracts();
+  const { writeContract } = useWriteContract();
+  const { data: availableCapabilities } = useCapabilities({
+    account: account.address,
+  });
+
+  const capabilities = useMemo(() => {
+    if (!availableCapabilities || !account.chainId) return {};
+    const capabilitiesForChain = availableCapabilities[account.chainId];
+    if (
+      capabilitiesForChain["paymasterService"] &&
+      capabilitiesForChain["paymasterService"].supported
+    ) {
+      return {
+        paymasterService: {
+          url: `https://api.developer.coinbase.com/rpc/v1/base/v7HqDLjJY4e28qgIDAAN4JNYXnz88mJZ`,
+        },
+      };
+    }
+    return {};
+  }, [availableCapabilities, account.chainId]);
+
+  const recordMatch = async (
+    homeownerAddress: string,
+    visitorAddress: string
+  ) => {
+    if (account.chainId !== baseSepolia.id) {
+      await switchChain({ chainId: baseSepolia.id });
+    }
+    if (Object.keys(capabilities).length > 0) {
+      await writeContracts({
+        contracts: [
+          {
+            address:
+              leaderboardContractAddress[
+                account.chainId as keyof typeof leaderboardContractAddress
+              ],
+            abi: leaderboardContractAbi,
+            functionName: "recordMatch",
+            args: [
+              homeownerAddress as `0x${string}`,
+              visitorAddress as `0x${string}`,
+            ],
+          },
+        ],
+        capabilities,
+      });
+    } else {
+      await writeContract({
+        address:
+          leaderboardContractAddress[
+            account.chainId as keyof typeof leaderboardContractAddress
+          ],
+        abi: leaderboardContractAbi,
+        functionName: "fundPrizePool",
+        args: [],
+        value: parseEther("0.001"),
+      });
+      await writeContract({
+        address:
+          leaderboardContractAddress[
+            account.chainId as keyof typeof leaderboardContractAddress
+          ],
+        abi: leaderboardContractAbi,
+        functionName: "recordMatch",
+        args: [
+          homeownerAddress as `0x${string}`,
+          visitorAddress as `0x${string}`,
+        ],
+      });
+    }
+  };
+
   const handleSwipe = async (direction: "left" | "right") => {
     if (currentVisitorIndex >= visitors.length || isProcessing) return;
 
@@ -83,6 +171,9 @@ export default function HomeScreen({
 
     try {
       if (direction === "right") {
+        const visitor = visitors[currentVisitorIndex].visitor.address;
+        await recordMatch(account.address as `0x${string}`, visitor);
+
         // Mark as matched (swipe right = "trETH")
         const response = await fetch("/api/visits", {
           method: "PATCH",

@@ -19,8 +19,6 @@ export default function MintButton({ fid, tokenURI }: MintButtonProps) {
     account: account.address,
   });
 
-  console.log("Available capabilities:", availableCapabilities);
-
   const capabilities = useMemo(() => {
     if (!availableCapabilities || !account.chainId) return {};
     const capabilitiesForChain = availableCapabilities[account.chainId];
