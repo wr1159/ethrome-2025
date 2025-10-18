@@ -335,9 +335,9 @@ forge script script/Deploy.s.sol --rpc-url $BASE_SEPOLIA_RPC_URL --broadcast
 - [x] Install supabase
 - [x] Create & upload avatar
 - [x] Mint NFT (with & without wallet)
-- [ ] View neighborhood
-- [ ] Visit house & send message
-- [ ] Receive visit & swipe
+- [x] View neighborhood
+- [x] Visit house & send message
+- [x] Receive visit & swipe
 - [ ] Leaderboard updates
 
 ## Files to Reference
