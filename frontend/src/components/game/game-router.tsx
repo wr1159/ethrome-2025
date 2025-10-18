@@ -15,12 +15,33 @@ export default function GameRouter({
   onScreenChange,
 }: GameRouterProps) {
   const [avatarImageData, setAvatarImageData] = useState<string>("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string>("");
 
-  const handleAvatarSave = (imageData: string) => {
-    setAvatarImageData(imageData);
-    console.log("Avatar saved:", imageData.substring(0, 50) + "...");
-    // TODO: Upload to Supabase and mint NFT
-    onScreenChange("home");
+  const handleAvatarSave = async (imageData: string, avatarUrl?: string) => {
+    setIsSaving(true);
+    setSaveMessage("Saving your avatar...");
+
+    try {
+      setAvatarImageData(imageData);
+      setSaveMessage("Avatar saved successfully! 🎃");
+
+      // Show success message for 2 seconds, then go to home
+      setTimeout(() => {
+        setSaveMessage("");
+        onScreenChange("home");
+      }, 2000);
+    } catch (error) {
+      console.error("Failed to save avatar:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to save avatar. Please try again.";
+      setSaveMessage(errorMessage);
+      setTimeout(() => setSaveMessage(""), 5000);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleAvatarCancel = () => {
@@ -33,21 +54,67 @@ export default function GameRouter({
         <AvatarCreator
           onSave={handleAvatarSave}
           onCancel={handleAvatarCancel}
+          isSaving={isSaving}
         />
       );
     case "home":
       return (
-        <div className="flex flex-col items-center justify-center min-h-screen">
-          <h1 className="text-3xl font-bold mb-4">Trick or TrETH</h1>
-          <p className="text-lg mb-8">
+        <div
+          className="flex flex-col items-center justify-center min-h-screen"
+          style={{ backgroundColor: "var(--background)" }}
+        >
+          <h1
+            className="pixel-font mb-4"
+            style={{ color: "var(--foreground)" }}
+          >
+            Trick or TrETH
+          </h1>
+          <p
+            className="pixel-font mb-8"
+            style={{ color: "var(--muted-foreground)", fontSize: "10px" }}
+          >
             Welcome to your Halloween neighborhood!
           </p>
-          <button
-            onClick={() => onScreenChange("avatar-creator")}
-            className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg text-lg font-semibold"
-          >
-            Create Avatar
-          </button>
+
+          {avatarImageData && (
+            <div className="mb-6">
+              <p
+                className="pixel-font mb-2"
+                style={{ color: "var(--foreground)", fontSize: "8px" }}
+              >
+                Your Avatar:
+              </p>
+              <img
+                src={avatarImageData}
+                alt="Your avatar"
+                className="border-2 rounded-lg"
+                style={{
+                  borderColor: "var(--primary)",
+                  imageRendering: "pixelated",
+                }}
+                width="120"
+                height="200"
+              />
+            </div>
+          )}
+
+          {saveMessage && (
+            <div
+              className="mb-4 p-3 rounded-lg"
+              style={{
+                backgroundColor: "var(--muted)",
+                color: "var(--foreground)",
+              }}
+            >
+              <p className="pixel-font" style={{ fontSize: "8px" }}>
+                {saveMessage}
+              </p>
+            </div>
+          )}
+
+          <Button onClick={() => onScreenChange("avatar-creator")}>
+            {avatarImageData ? "Edit Avatar" : "Create Avatar"}
+          </Button>
         </div>
       );
     default:

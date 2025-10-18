@@ -23,13 +23,15 @@ const CANVAS_HEIGHT = 50;
 const PIXEL_SIZE = 10; // Size of each pixel in the display
 
 interface AvatarCreatorProps {
-  onSave: (imageData: string) => void;
+  onSave: (imageData: string, avatarUrl?: string) => void;
   onCancel: () => void;
+  isSaving?: boolean;
 }
 
 export default function AvatarCreator({
   onSave,
   onCancel,
+  isSaving = false,
 }: AvatarCreatorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedColor, setSelectedColor] = useState<PixelColor>(
@@ -186,9 +188,37 @@ export default function AvatarCreator({
     return exportCanvas.toDataURL("image/png");
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const imageData = exportImage();
-    onSave(imageData);
+
+    try {
+      // Upload to Supabase
+      const response = await fetch("/api/avatar/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          imageData: imageData,
+          fid: 1, // TODO: Get from auth context
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || `Upload failed: ${response.statusText}`
+        );
+      }
+
+      const result = await response.json();
+      console.log("Avatar uploaded successfully:", result);
+      onSave(imageData, result.avatarUrl);
+    } catch (error) {
+      console.error("Failed to save avatar:", error);
+      // The error will be handled by the parent component
+      throw error;
+    }
   };
 
   return (
@@ -263,8 +293,13 @@ export default function AvatarCreator({
 
       {/* Actions */}
       <div className="flex gap-4">
-        <Button onClick={handleSave} variant="default">
-          Save Avatar
+        <Button
+          onClick={handleSave}
+          variant="default"
+          isLoading={isSaving}
+          disabled={isSaving}
+        >
+          {isSaving ? "Saving..." : "Save Avatar"}
         </Button>
         <Button onClick={onCancel} variant="secondary">
           Cancel

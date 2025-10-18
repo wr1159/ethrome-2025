@@ -45,11 +45,11 @@ export default function App() {
           Demo Mode
         </button>
       </div>
-      {!showGame && (
+      {/* {!showGame && (
         <div className="mt-8">
           <Demo />
         </div>
-      )}
+      )} */}
     </div>
   );
 }
