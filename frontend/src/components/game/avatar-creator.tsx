@@ -55,7 +55,7 @@ export default function AvatarCreator({
       .map(() => Array(CANVAS_WIDTH).fill(0))
   );
   const [isDrawing, setIsDrawing] = useState(false);
-  const [tool, setTool] = useState<"draw" | "erase">("draw");
+  const [tool, setTool] = useState<"draw" | "erase" | "fill">("draw");
   const [showShareDialog, setShowShareDialog] = useState(false);
 
   // Initialize canvas
@@ -133,15 +133,21 @@ export default function AvatarCreator({
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     e.preventDefault();
-    setIsDrawing(true);
     const { x, y } = getMousePosition(e);
     if (x >= 0 && x < CANVAS_WIDTH && y >= 0 && y < CANVAS_HEIGHT) {
-      drawPixel(x, y);
+      if (tool === "fill") {
+        // Fill tool only needs one click, no continuous drawing
+        drawPixel(x, y);
+      } else {
+        // Draw and erase tools need continuous drawing
+        setIsDrawing(true);
+        drawPixel(x, y);
+      }
     }
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing) return;
+    if (!isDrawing || tool === "fill") return;
     e.preventDefault();
 
     const { x, y } = getMousePosition(e);
@@ -161,9 +167,45 @@ export default function AvatarCreator({
         newPixels[y][x] = selectedColor.value;
       } else if (tool === "erase") {
         newPixels[y][x] = 0;
+      } else if (tool === "fill") {
+        floodFill(newPixels, x, y, prev[y][x], selectedColor.value);
       }
       return newPixels;
     });
+  };
+
+  // Flood fill algorithm for bucket tool
+  const floodFill = (
+    pixels: number[][],
+    startX: number,
+    startY: number,
+    targetColor: number,
+    fillColor: number
+  ) => {
+    // If target color is the same as fill color, no need to fill
+    if (targetColor === fillColor) return;
+
+    const stack: { x: number; y: number }[] = [];
+    stack.push({ x: startX, y: startY });
+
+    while (stack.length > 0) {
+      const { x, y } = stack.pop()!;
+
+      // Check bounds
+      if (x < 0 || x >= CANVAS_WIDTH || y < 0 || y >= CANVAS_HEIGHT) continue;
+
+      // Check if pixel is the target color
+      if (pixels[y][x] !== targetColor) continue;
+
+      // Fill the pixel
+      pixels[y][x] = fillColor;
+
+      // Add adjacent pixels to stack
+      stack.push({ x: x + 1, y });
+      stack.push({ x: x - 1, y });
+      stack.push({ x, y: y + 1 });
+      stack.push({ x, y: y - 1 });
+    }
   };
 
   // Touch event handlers for mobile
@@ -180,16 +222,22 @@ export default function AvatarCreator({
 
   const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
     e.preventDefault();
-    setIsDrawing(true);
     const touch = e.touches[0];
     const { x, y } = getTouchPosition(touch);
     if (x >= 0 && x < CANVAS_WIDTH && y >= 0 && y < CANVAS_HEIGHT) {
-      drawPixel(x, y);
+      if (tool === "fill") {
+        // Fill tool only needs one touch, no continuous drawing
+        drawPixel(x, y);
+      } else {
+        // Draw and erase tools need continuous drawing
+        setIsDrawing(true);
+        drawPixel(x, y);
+      }
     }
   };
 
   const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
-    if (!isDrawing) return;
+    if (!isDrawing || tool === "fill") return;
     e.preventDefault();
 
     const touch = e.touches[0];
@@ -386,6 +434,12 @@ export default function AvatarCreator({
           >
             Erase
           </Button>
+          <Button
+            variant={tool === "fill" ? "default" : "secondary"}
+            onClick={() => setTool("fill")}
+          >
+            Fill
+          </Button>
           <Button variant="destructive" onClick={clearCanvas}>
             Clear
           </Button>
@@ -411,7 +465,7 @@ export default function AvatarCreator({
         </Button>
         <MintButton
           fid={fid}
-          tokenURI={`https://trick-or-treth.vercel.app/api/avatar/${fid}.png}`}
+          tokenURI={`${process.env.NEXT_PUBLIC_URL}/api/avatar/${fid}.png}`}
         />
       </div>
 
