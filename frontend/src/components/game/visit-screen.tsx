@@ -31,6 +31,7 @@ export default function HomeScreen({
   onVisitNeighborhood,
 }: HomeScreenProps) {
   const frameContext = useFrameContext();
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const user = (frameContext?.context as any)?.user ?? null;
   const currentFid = user?.fid ?? 0;
 
@@ -222,7 +223,7 @@ export default function HomeScreen({
           className="pixel-font mb-8 text-center max-w-md"
           style={{ color: "var(--muted-foreground)" }}
         >
-          <p>You've reviewed all your visitors.</p>
+          <p>You&apos;ve reviewed all your visitors.</p>
           <p>Go visit more neighbors to get more visitors!</p>
         </div>
         <div className="flex gap-4">
@@ -270,7 +271,7 @@ export default function HomeScreen({
         className="pixel-font text-center mb-6"
         style={{ color: "var(--muted-foreground)", fontSize: "10px" }}
       >
-        <p>Swipe right to "TrETH" (accept) or left to decline</p>
+        <p>Swipe right to &quot;TrETH&quot; (accept) or left to decline</p>
       </div>
 
       {/* Action Buttons */}

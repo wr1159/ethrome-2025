@@ -111,7 +111,7 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: "Missing visitId" }, { status: 400 });
     }
 
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: any = {};
     if (matched !== undefined) updateData.matched = matched;
     if (seen !== undefined) updateData.seen = seen;

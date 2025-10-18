@@ -140,7 +140,7 @@ export default function VisitorCard({
         {/* Message */}
         <div className="w-full p-4 rounded border-2 border-border bg-background">
           <div className="pixel-font text-sm text-center text-foreground">
-            "{visitor.message}"
+            &quot;{visitor.message}&quot;
           </div>
         </div>
 
