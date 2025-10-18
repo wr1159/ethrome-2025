@@ -1,9 +1,13 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { Button } from "~/components/ui/button";
 import sdk from "@farcaster/miniapp-sdk";
+import { Metadata } from "next";
+import { useSearchParams } from "next/navigation";
+import { env } from "process";
+import { useEffect, useState } from "react";
+import GameRouter from "~/components/game/game-router";
+import { Button } from "~/components/ui/button";
+import { GameScreen } from "~/types";
+
+const appUrl = env.NEXT_PUBLIC_URL;
 
 interface Player {
   fid: number;
@@ -12,8 +16,45 @@ interface Player {
   avatar_url: string;
   created_at: string;
 }
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}): Promise<Metadata> {
+  const { id } = await params;
 
-export default function FramePage() {
+  const imageUrl = new URL(`${appUrl}/api/og/${id}`);
+
+  const frame = {
+    version: "next",
+    imageUrl: imageUrl.toString(),
+    button: {
+      title: "Launch App",
+      action: {
+        type: "launch_frame",
+        name: "Launch App",
+        url: appUrl,
+        splashImageUrl: `${appUrl}/images/splash.png`,
+        splashBackgroundColor: "#000",
+      },
+    },
+  };
+
+  return {
+    title: "Trick or TrETH",
+    openGraph: {
+      title: "Trick or TrETH",
+      description: "Put on your best costume!",
+      images: [{ url: imageUrl.toString() }],
+    },
+    other: {
+      "fc:frame": JSON.stringify(frame),
+    },
+  };
+}
+
+export default async function FramePage() {
   const searchParams = useSearchParams();
   const [player, setPlayer] = useState<Player | null>(null);
   const [loading, setLoading] = useState(true);
