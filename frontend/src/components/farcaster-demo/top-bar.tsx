@@ -13,23 +13,21 @@ export function TopBar() {
     }
   };
 
-  const userPfp = frameContext?.context && (frameContext.context as any)?.user?.pfpUrl 
-    ? (frameContext.context as any).user.pfpUrl 
-    : undefined;
+  const userPfp =
+    frameContext?.context && (frameContext.context as any)?.user?.pfpUrl
+      ? (frameContext.context as any).user.pfpUrl
+      : undefined;
 
   return (
     <div className="mb-6 mt-3 flex items-center justify-between">
-      <img 
-        src="/base-logo.png" 
-        alt="Base" 
+      <img
+        src="/icon.png"
+        alt="Trick or TrETH"
         className="h-8 object-contain"
       />
-      
+
       {userPfp && (
-        <button
-          onClick={handleProfileClick}
-          className="flex-shrink-0"
-        >
+        <button onClick={handleProfileClick} className="flex-shrink-0">
           <img
             src={userPfp as string}
             alt="Profile"
