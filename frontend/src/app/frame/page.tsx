@@ -57,8 +57,6 @@ export default function FramePage() {
   }, [fid]);
 
   const handleVisitHouse = () => {
-    // This would open the mini-app to visit the player's house
-    // For now, we'll just show a message
     sdk.actions.openMiniApp({
       url: `${process.env.NEXT_PUBLIC_URL}/frame?id=${player?.fid as number}`,
     });
@@ -134,8 +132,8 @@ export default function FramePage() {
         {/* Game Info */}
         <div className="pixel-font text-gray-400 text-xs">
           <p>Draw your own Halloween avatar</p>
-          <p>Visit other players' houses</p>
-          <p>Get the most "TrETHs" to win ETH!</p>
+          <p>Visit other players&apos; houses</p>
+          <p>Get the most TrETHs to win ETH!</p>
         </div>
       </div>
     </div>

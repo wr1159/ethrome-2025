@@ -54,7 +54,7 @@ export default function ShareAvatarDialog({
             Share Your Avatar?
           </h2>
           <p className="pixel-font text-sm mb-4 text-muted-foreground">
-            Let your friends know you've created your Halloween avatar and
+            Let your friends know you&apos;ve created your Halloween avatar and
             invite them to visit your house!
           </p>
         </div>
