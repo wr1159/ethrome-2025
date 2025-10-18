@@ -24,7 +24,7 @@ export default function ShareAvatarDialog({
     try {
       setIsSharing(true);
 
-      const frameUrl = `${process.env.NEXT_PUBLIC_URL}/frame?id=${fid}`;
+      const frameUrl = `${process.env.NEXT_PUBLIC_URL}/frame/${fid}`;
       const castText = `🎃 Just created my Halloween avatar in Trick or TrETH! Visit my house and leave a spooky message! 👻`;
 
       const result = await sdk.actions.composeCast({
