@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Sepolia Basescan__](https://sepolia.basescan.org/address/0xBf6E80f79a6138f2f022901D94c57dc67f9F394A)
+ * [__View Contract on Base Sepolia Basescan__](https://sepolia.basescan.org/address/0x3859f1Bd04C1Dd9Df9cd37C0bA4756e0EA24AEfd)
  */
 export const avatarNftAbi = [
   {
@@ -359,14 +359,14 @@ export const avatarNftAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Sepolia Basescan__](https://sepolia.basescan.org/address/0xBf6E80f79a6138f2f022901D94c57dc67f9F394A)
+ * [__View Contract on Base Sepolia Basescan__](https://sepolia.basescan.org/address/0x3859f1Bd04C1Dd9Df9cd37C0bA4756e0EA24AEfd)
  */
 export const avatarNftAddress = {
-  84532: '0xBf6E80f79a6138f2f022901D94c57dc67f9F394A',
+  84532: '0x3859f1Bd04C1Dd9Df9cd37C0bA4756e0EA24AEfd',
 } as const
 
 /**
- * [__View Contract on Base Sepolia Basescan__](https://sepolia.basescan.org/address/0xBf6E80f79a6138f2f022901D94c57dc67f9F394A)
+ * [__View Contract on Base Sepolia Basescan__](https://sepolia.basescan.org/address/0x3859f1Bd04C1Dd9Df9cd37C0bA4756e0EA24AEfd)
  */
 export const avatarNftConfig = {
   address: avatarNftAddress,
@@ -1241,7 +1241,7 @@ export const iMulticall3Abi = [
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Sepolia Basescan__](https://sepolia.basescan.org/address/0x7840680678170447f08D1a03Edc1744BFDdf4cb9)
+ * [__View Contract on Base Sepolia Basescan__](https://sepolia.basescan.org/address/0x12104e09e35e1319b1Bc19b3dBb487bE59D08c8c)
  */
 export const leaderboardContractAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -1457,14 +1457,14 @@ export const leaderboardContractAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Sepolia Basescan__](https://sepolia.basescan.org/address/0x7840680678170447f08D1a03Edc1744BFDdf4cb9)
+ * [__View Contract on Base Sepolia Basescan__](https://sepolia.basescan.org/address/0x12104e09e35e1319b1Bc19b3dBb487bE59D08c8c)
  */
 export const leaderboardContractAddress = {
-  84532: '0x7840680678170447f08D1a03Edc1744BFDdf4cb9',
+  84532: '0x12104e09e35e1319b1Bc19b3dBb487bE59D08c8c',
 } as const
 
 /**
- * [__View Contract on Base Sepolia Basescan__](https://sepolia.basescan.org/address/0x7840680678170447f08D1a03Edc1744BFDdf4cb9)
+ * [__View Contract on Base Sepolia Basescan__](https://sepolia.basescan.org/address/0x12104e09e35e1319b1Bc19b3dBb487bE59D08c8c)
  */
 export const leaderboardContractConfig = {
   address: leaderboardContractAddress,
