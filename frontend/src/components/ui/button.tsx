@@ -1,4 +1,5 @@
 import * as React from "react";
+import { HapticWrapper } from "../farcaster-demo/haptic-wrapper";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "default" | "outline" | "secondary" | "ghost" | "destructive";
@@ -41,21 +42,22 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
 
     return (
-      <button
+      <HapticWrapper
+        hapticType="impact"
         className={classes}
-        ref={ref}
-        disabled={isLoading || props.disabled}
-        {...props}
+        onClick={props.onClick as () => void}
       >
-        {isLoading ? (
-          <div className="flex items-center justify-center">
-            <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full mr-2" />
-            {children}
-          </div>
-        ) : (
-          children
-        )}
-      </button>
+        <button ref={ref} disabled={isLoading || props.disabled} {...props}>
+          {isLoading ? (
+            <div className="flex items-center justify-center">
+              <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full mr-2" />
+              {children}
+            </div>
+          ) : (
+            children
+          )}
+        </button>
+      </HapticWrapper>
     );
   }
 );
