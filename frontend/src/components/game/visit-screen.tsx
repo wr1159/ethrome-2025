@@ -154,12 +154,12 @@ export default function HomeScreen({
         />
 
         {/* Content Overlay */}
-        <div className="relative z-10 flex flex-col items-center justify-center">
+        <div className="relative z-10 flex flex-col items-center justify-center text-center">
           <h1
             className="pixel-font text-2xl mb-4"
             style={{ color: "var(--foreground)" }}
           >
-            Loading Your House...
+            Loading visitors...
           </h1>
           <div className="animate-spin h-8 w-8 border-4 border-current border-t-transparent rounded-full" />
         </div>
