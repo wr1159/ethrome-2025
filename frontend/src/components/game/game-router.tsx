@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import AvatarCreator from "./avatar-creator";
 import NeighborhoodScreen from "./neighborhood-screen";
+import HomeScreen from "./visit-screen";
 import { GameScreen } from "~/types";
 import { Button } from "../ui/button";
 
@@ -51,6 +52,10 @@ export default function GameRouter({
 
   const handleBackToHome = () => {
     onScreenChange("home");
+  };
+
+  const handleVisitNeighborhood = () => {
+    onScreenChange("neighborhood");
   };
 
   switch (currentScreen) {
@@ -127,11 +132,24 @@ export default function GameRouter({
             >
               Visit Neighborhood
             </Button>
+            <Button
+              onClick={() => onScreenChange("visits")}
+              className="pixel-font"
+            >
+              My House
+            </Button>
           </div>
         </div>
       );
     case "neighborhood":
       return <NeighborhoodScreen onBack={handleBackToHome} />;
+    case "visits":
+      return (
+        <HomeScreen
+          onBack={handleBackToHome}
+          onVisitNeighborhood={handleVisitNeighborhood}
+        />
+      );
     default:
       return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-orange-100">

@@ -43,6 +43,7 @@ export type GameScreen =
   | "home"
   | "neighborhood"
   | "avatar-creator"
+  | "visits"
   | "leaderboard";
 
 export interface Player {
