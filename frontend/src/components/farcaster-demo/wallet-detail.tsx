@@ -2,7 +2,7 @@
 
 import { Button, Typography } from "@worldcoin/mini-apps-ui-kit-react";
 import { WalletActionDefinition, WalletPageType } from "~/types";
-import { HapticWrapper } from "~/components/haptic-wrapper";
+import { HapticWrapper } from "~/components/farcaster-demo/haptic-wrapper";
 
 interface WalletDetailProps {
   currentWalletPage: WalletPageType;
@@ -10,18 +10,20 @@ interface WalletDetailProps {
   onBack: () => void;
 }
 
-export function WalletDetail({ currentWalletPage, walletActionDefinitions, onBack }: WalletDetailProps) {
-  const currentWalletAction = walletActionDefinitions.find(a => a.id === currentWalletPage);
+export function WalletDetail({
+  currentWalletPage,
+  walletActionDefinitions,
+  onBack,
+}: WalletDetailProps) {
+  const currentWalletAction = walletActionDefinitions.find(
+    (a) => a.id === currentWalletPage
+  );
 
   return (
     <div>
       <div className="flex items-center gap-3 mb-4">
         <HapticWrapper onClick={onBack} hapticType="impact">
-          <Button
-            variant="secondary"
-            size="sm"
-            className="p-2"
-          >
+          <Button variant="secondary" size="sm" className="p-2">
             <span className="text-muted-foreground">←</span>
           </Button>
         </HapticWrapper>
