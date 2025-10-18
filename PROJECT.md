@@ -236,7 +236,7 @@ NEXT_PUBLIC_LEADERBOARD_ADDRESS=
 
 ### Phase 1 (Core Functionality)
 
-1. Smart contracts deployed
+1. ✅ Smart contracts deployed (with comprehensive tests)
 2. Supabase setup
 3. Quick Auth integration
 4. Pixel avatar creator (basic draw only)
@@ -329,6 +329,7 @@ forge script script/Deploy.s.sol --rpc-url $BASE_SEPOLIA_RPC_URL --broadcast
 
 ## Testing Checklist
 
+- [x] Smart contract tests (AvatarNFT, LeaderboardContract, Integration)
 - [ ] Quick Auth login flow
 - [ ] Create & upload avatar
 - [ ] Mint NFT (with & without wallet)
