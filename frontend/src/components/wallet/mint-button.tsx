@@ -21,9 +21,12 @@ export default function MintButton({ fid, tokenURI }: MintButtonProps) {
 
   const capabilities = useMemo(() => {
     if (!availableCapabilities || !account.chainId) return {};
+    console.log("=== CAPABILITIES DEBUG INFO ===");
+    console.log("availableCapabilities", availableCapabilities);
+    console.log("account.chainId", account.chainId);
     const capabilitiesForChain = availableCapabilities[account.chainId];
+    console.log("capabilitiesForChain", capabilitiesForChain);
     if (
-      capabilitiesForChain &&
       capabilitiesForChain["paymasterService"] &&
       capabilitiesForChain["paymasterService"].supported
     ) {

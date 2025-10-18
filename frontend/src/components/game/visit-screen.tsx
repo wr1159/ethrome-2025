@@ -98,12 +98,17 @@ export default function HomeScreen({
 
   const capabilities = useMemo(() => {
     if (!availableCapabilities || !account.chainId) return {};
+    console.log("=== CAPABILITIES DEBUG INFO ===");
+    console.log("availableCapabilities", availableCapabilities);
+    console.log("account.chainId", account.chainId);
     const capabilitiesForChain = availableCapabilities[account.chainId];
+    console.log("capabilitiesForChain", capabilitiesForChain);
     if (
       capabilitiesForChain &&
       capabilitiesForChain["paymasterService"] &&
       capabilitiesForChain["paymasterService"].supported
     ) {
+      console.log("=== PAYMASTER SERVICE FOUND ===");
       return {
         paymasterService: {
           url: `https://api.developer.coinbase.com/rpc/v1/base/v7HqDLjJY4e28qgIDAAN4JNYXnz88mJZ`,
