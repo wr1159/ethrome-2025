@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { useFrameContext } from "../providers/frame-provider";
 import { Name } from "@coinbase/onchainkit/identity";
+import VisitDialog from "./visit-dialog";
 
 interface Player {
   fid: number;
@@ -11,17 +12,15 @@ interface Player {
   username: string;
   avatar_url: string;
   created_at: string;
-  ensName: string;
+  ensName?: string;
 }
 
 interface NeighborhoodScreenProps {
   onBack: () => void;
-  onVisitPlayer: (player: Player) => void;
 }
 
 export default function NeighborhoodScreen({
   onBack,
-  onVisitPlayer,
 }: NeighborhoodScreenProps) {
   const frameContext = useFrameContext();
   const user = (frameContext?.context as any)?.user ?? null;
@@ -34,7 +33,8 @@ export default function NeighborhoodScreen({
   const housesPerPage = 2; // Show 2 houses per page
   const [houseImages, setHouseImages] = useState<string[]>([]);
   const [isShuffling, setIsShuffling] = useState(false);
-  console.log("currentPage", currentPage);
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [isSubmittingVisit, setIsSubmittingVisit] = useState(false);
 
   // Fetch players on component mount
   useEffect(() => {
@@ -50,13 +50,11 @@ export default function NeighborhoodScreen({
         const data = await response.json();
 
         if (data.success) {
-          // Filter out current user
-          //   const otherPlayers = data.players.filter(
-          //     (player: Player) => player.fid !== currentFid
-          //   );
-          //   setPlayers(otherPlayers);
-          console.log("data.players", data.players);
-          setPlayers(data.players);
+          //   Filter out current user
+          const otherPlayers = data.players.filter(
+            (player: Player) => player.fid !== currentFid
+          );
+          setPlayers(otherPlayers);
           setCurrentPage(0); // Reset to first page when new data loads
         } else {
           throw new Error(data.error || "Failed to fetch players");
@@ -75,7 +73,45 @@ export default function NeighborhoodScreen({
   }, [currentFid]);
 
   const handleHouseClick = (player: Player) => {
-    onVisitPlayer(player);
+    setSelectedPlayer(player);
+  };
+
+  const handleVisit = async (message: string) => {
+    if (!selectedPlayer) return;
+
+    setIsSubmittingVisit(true);
+    try {
+      const response = await fetch("/api/visits", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          visitorFid: currentFid,
+          homeownerFid: selectedPlayer.fid,
+          message: message,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to record visit");
+      }
+
+      const result = await response.json();
+      console.log("Visit recorded successfully:", result);
+
+      // Close dialog and show success
+      setSelectedPlayer(null);
+    } catch (error) {
+      console.error("Failed to record visit:", error);
+    } finally {
+      setIsSubmittingVisit(false);
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedPlayer(null);
   };
 
   // Pagination logic
@@ -311,6 +347,16 @@ export default function NeighborhoodScreen({
           </p>
         </div>
       </div>
+
+      {/* Visit Dialog */}
+      {selectedPlayer && (
+        <VisitDialog
+          player={selectedPlayer}
+          onClose={handleCloseDialog}
+          onVisit={handleVisit}
+          isSubmitting={isSubmittingVisit}
+        />
+      )}
     </div>
   );
 }
