@@ -52,8 +52,17 @@ export default function MintButton({ fid, tokenURI }: MintButtonProps) {
         );
       }
 
-      if (capabilities) {
-        await writeContracts({
+      console.log("=== MINT DEBUG INFO ===");
+      console.log("FID:", fid);
+      console.log("TokenURI:", tokenURI);
+      console.log("Account chainId:", account.chainId);
+      console.log("Contract address:", contractAddress);
+      console.log("Capabilities:", capabilities);
+
+      // NOTE: Doesn't work on web for some reason with EOA
+      if (Object.keys(capabilities).length > 0) {
+        console.log("Attempting sponsored transaction with writeContracts...");
+        const result = await writeContracts({
           contracts: [
             {
               address: contractAddress,
@@ -64,10 +73,14 @@ export default function MintButton({ fid, tokenURI }: MintButtonProps) {
           ],
           capabilities,
         });
+        console.log("writeContracts result:", result);
+        alert("NFT minted successfully with sponsored transaction!");
         return;
       }
 
-      await writeContract({
+      // Fallback to regular writeContract
+      console.log("Attempting regular transaction with writeContract...");
+      const result = await writeContract({
         address: contractAddress,
         abi: avatarNftAbi,
         functionName: "mint",
