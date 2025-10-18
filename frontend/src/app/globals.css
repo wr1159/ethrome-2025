@@ -31,7 +31,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     /* Dark mode Halloween theme */
-    --background: #b3a59b;
+    --background: #000;
     --foreground: #fed7aa;
     --card: #292524;
     --card-foreground: #fed7aa;
