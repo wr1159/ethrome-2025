@@ -1,0 +1,39 @@
+{
+  "name": "@examples/xmtp-gm",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx --watch index.ts",
+    "gen:keys": "tsx ../../scripts/generateKeys.ts",
+    "lint": "cd ../.. && yarn eslint examples/xmtp-gm",
+    "start": "tsx index.ts"
+  },
+  "dependencies": {
+    "@xmtp/agent-sdk": "*",
+    "fs": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1.2.6",
+    "@eslint/js": "^9.19.0",
+    "@types/node": "^22.13.0",
+    "@xmtp/content-type-primitives": "^2.0.2",
+    "@xmtp/content-type-remote-attachment": "^2.0.2",
+    "@xmtp/content-type-wallet-send-calls": "^1.0.1",
+    "eslint": "^9.19.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "prettier-plugin-packagejson": "^2.5.8",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.22.0",
+    "uint8arrays": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
