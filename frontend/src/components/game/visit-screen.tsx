@@ -141,16 +141,28 @@ export default function HomeScreen({
   if (loading) {
     return (
       <div
-        className="flex flex-col items-center justify-center min-h-screen"
+        className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden"
         style={{ backgroundColor: "var(--background)" }}
       >
-        <h1
-          className="pixel-font text-2xl mb-4"
-          style={{ color: "var(--foreground)" }}
-        >
-          Loading Your House...
-        </h1>
-        <div className="animate-spin h-8 w-8 border-4 border-current border-t-transparent rounded-full" />
+        {/* Door Background */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/game/door_pov.png')",
+            backgroundSize: "cover",
+          }}
+        />
+
+        {/* Content Overlay */}
+        <div className="relative z-10 flex flex-col items-center justify-center">
+          <h1
+            className="pixel-font text-2xl mb-4"
+            style={{ color: "var(--foreground)" }}
+          >
+            Loading Your House...
+          </h1>
+          <div className="animate-spin h-8 w-8 border-4 border-current border-t-transparent rounded-full" />
+        </div>
       </div>
     );
   }
@@ -158,24 +170,36 @@ export default function HomeScreen({
   if (error) {
     return (
       <div
-        className="flex flex-col items-center justify-center min-h-screen"
+        className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden"
         style={{ backgroundColor: "var(--background)" }}
       >
-        <h1
-          className="pixel-font text-2xl mb-4"
-          style={{ color: "var(--foreground)" }}
-        >
-          Error
-        </h1>
+        {/* Door Background */}
         <div
-          className="pixel-font mb-4"
-          style={{ color: "var(--destructive)" }}
-        >
-          {error}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/game/door_pov.png')",
+            backgroundSize: "cover",
+          }}
+        />
+
+        {/* Content Overlay */}
+        <div className="relative z-10 flex flex-col items-center justify-center">
+          <h1
+            className="pixel-font text-2xl mb-4"
+            style={{ color: "var(--foreground)" }}
+          >
+            Error
+          </h1>
+          <div
+            className="pixel-font mb-4"
+            style={{ color: "var(--destructive)" }}
+          >
+            {error}
+          </div>
+          <Button onClick={onBack} variant="secondary">
+            Go Back
+          </Button>
         </div>
-        <Button onClick={onBack} variant="secondary">
-          Go Back
-        </Button>
       </div>
     );
   }
@@ -183,27 +207,39 @@ export default function HomeScreen({
   if (visitors.length === 0) {
     return (
       <div
-        className="flex flex-col items-center justify-center min-h-screen"
+        className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden"
         style={{ backgroundColor: "var(--background)" }}
       >
-        <h1
-          className="pixel-font text-2xl mb-4"
-          style={{ color: "var(--foreground)" }}
-        >
-          Your House
-        </h1>
+        {/* Door Background */}
         <div
-          className="pixel-font mb-8 text-center max-w-md"
-          style={{ color: "var(--muted-foreground)" }}
-        >
-          <p>No visitors yet!</p>
-          <p>Go visit your neighbors to get some visitors.</p>
-        </div>
-        <div className="flex gap-4">
-          <Button onClick={onBack} variant="secondary">
-            Back Home
-          </Button>
-          <Button onClick={onVisitNeighborhood}>Visit Neighborhood</Button>
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/game/door_pov.png')",
+            backgroundSize: "cover",
+          }}
+        />
+
+        {/* Content Overlay */}
+        <div className="relative z-10 flex flex-col items-center justify-center">
+          <h1
+            className="pixel-font text-2xl mb-4"
+            style={{ color: "var(--foreground)" }}
+          >
+            Your House
+          </h1>
+          <div
+            className="pixel-font mb-8 text-center max-w-md"
+            style={{ color: "var(--muted-foreground)" }}
+          >
+            <p>No visitors yet!</p>
+            <p>Go visit your neighbors to get some visitors.</p>
+          </div>
+          <div className="flex gap-4">
+            <Button onClick={onBack} variant="secondary">
+              Back Home
+            </Button>
+            <Button onClick={onVisitNeighborhood}>Visit Neighborhood</Button>
+          </div>
         </div>
       </div>
     );
@@ -212,27 +248,39 @@ export default function HomeScreen({
   if (currentVisitorIndex >= visitors.length) {
     return (
       <div
-        className="flex flex-col items-center justify-center min-h-screen"
+        className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden"
         style={{ backgroundColor: "var(--background)" }}
       >
-        <h1
-          className="pixel-font text-2xl mb-4"
-          style={{ color: "var(--foreground)" }}
-        >
-          All Caught Up!
-        </h1>
+        {/* Door Background */}
         <div
-          className="pixel-font mb-8 text-center max-w-md"
-          style={{ color: "var(--muted-foreground)" }}
-        >
-          <p>You&apos;ve reviewed all your visitors.</p>
-          <p>Go visit more neighbors to get more visitors!</p>
-        </div>
-        <div className="flex gap-4">
-          <Button onClick={onBack} variant="secondary">
-            Back Home
-          </Button>
-          <Button onClick={onVisitNeighborhood}>Visit Neighborhood</Button>
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/game/door_pov.png')",
+            backgroundSize: "cover",
+          }}
+        />
+
+        {/* Content Overlay */}
+        <div className="relative z-10 flex flex-col items-center justify-center">
+          <h1
+            className="pixel-font text-2xl mb-4"
+            style={{ color: "var(--foreground)" }}
+          >
+            All Caught Up!
+          </h1>
+          <div
+            className="pixel-font mb-8 text-center max-w-md"
+            style={{ color: "var(--muted-foreground)" }}
+          >
+            <p>You&apos;ve reviewed all your visitors.</p>
+            <p>Go visit more neighbors to get more visitors!</p>
+          </div>
+          <div className="flex gap-4">
+            <Button onClick={onBack} variant="secondary">
+              Back Home
+            </Button>
+            <Button onClick={onVisitNeighborhood}>Visit Neighborhood</Button>
+          </div>
         </div>
       </div>
     );
@@ -240,71 +288,83 @@ export default function HomeScreen({
 
   return (
     <div
-      className="flex flex-col items-center justify-center min-h-screen p-4"
+      className="relative flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden"
       style={{ backgroundColor: "var(--background)" }}
     >
-      {/* Header */}
-      <div className="mb-6 text-center">
-        <h1
-          className="pixel-font text-2xl mb-2"
-          style={{ color: "var(--foreground)" }}
-        >
-          Your House
-        </h1>
-        <div
-          className="pixel-font text-sm"
-          style={{ color: "var(--muted-foreground)" }}
-        >
-          {currentVisitorIndex + 1} of {visitors.length} visitors
-        </div>
-      </div>
-
-      {/* Visitor Card */}
-      <div className="mb-8">
-        <VisitorCard
-          visitor={currentVisitor}
-          onSwipe={handleSwipe}
-          isProcessing={isProcessing}
-        />
-      </div>
-
-      {/* Swipe Instructions */}
+      {/* Door Background */}
       <div
-        className="pixel-font text-center mb-6"
-        style={{ color: "var(--muted-foreground)", fontSize: "10px" }}
-      >
-        <p>Swipe right to &quot;TrETH&quot; (accept) or left to decline</p>
-      </div>
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: "url('/game/door_pov.png')",
+          backgroundSize: "cover",
+        }}
+      />
 
-      {/* Action Buttons */}
-      <div className="flex gap-4 mb-6">
-        <Button
-          onClick={() => handleSwipe("left")}
-          variant="destructive"
-          disabled={isProcessing}
-          className="pixel-font"
-          style={{ fontSize: "12px" }}
-        >
-          👻 Decline
-        </Button>
-        <Button
-          onClick={() => handleSwipe("right")}
-          disabled={isProcessing}
-          className="pixel-font"
-          style={{ fontSize: "12px" }}
-        >
-          🎃 TrETH
-        </Button>
-      </div>
+      {/* Content Overlay */}
+      <div className="relative z-10 flex flex-col items-center justify-center w-full">
+        {/* Header */}
+        <div className="mb-6 text-center">
+          <h1
+            className="pixel-font text-2xl mb-2"
+            style={{ color: "var(--foreground)" }}
+          >
+            Your House
+          </h1>
+          <div
+            className="pixel-font text-sm"
+            style={{ color: "var(--muted-foreground)" }}
+          >
+            {currentVisitorIndex + 1} of {visitors.length} visitors
+          </div>
+        </div>
 
-      {/* Navigation */}
-      <div className="flex gap-4">
-        <Button onClick={onBack} variant="secondary" className="pixel-font">
-          Exit House
-        </Button>
-        <Button onClick={onVisitNeighborhood} className="pixel-font">
-          Visit Neighborhood
-        </Button>
+        {/* Visitor Card */}
+        <div className="mb-8">
+          <VisitorCard
+            visitor={currentVisitor}
+            onSwipe={handleSwipe}
+            isProcessing={isProcessing}
+          />
+        </div>
+
+        {/* Swipe Instructions */}
+        <div
+          className="pixel-font text-center mb-6"
+          style={{ color: "var(--muted-foreground)", fontSize: "10px" }}
+        >
+          <p>Swipe right to &quot;TrETH&quot; (accept) or left to decline</p>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-4 mb-6">
+          <Button
+            onClick={() => handleSwipe("left")}
+            variant="destructive"
+            disabled={isProcessing}
+            className="pixel-font"
+            style={{ fontSize: "12px" }}
+          >
+            👻 Decline
+          </Button>
+          <Button
+            onClick={() => handleSwipe("right")}
+            disabled={isProcessing}
+            className="pixel-font"
+            style={{ fontSize: "12px" }}
+          >
+            🎃 TrETH
+          </Button>
+        </div>
+
+        {/* Navigation */}
+        <div className="flex gap-4">
+          <Button onClick={onBack} variant="secondary" className="pixel-font">
+            Exit House
+          </Button>
+          <Button onClick={onVisitNeighborhood} className="pixel-font">
+            Visit Neighborhood
+          </Button>
+        </div>
       </div>
     </div>
   );
