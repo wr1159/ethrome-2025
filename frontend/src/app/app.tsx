@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import dynamic from "next/dynamic";
 import GameRouter from "~/components/game/game-router";
 import { GameScreen } from "~/types";
 
