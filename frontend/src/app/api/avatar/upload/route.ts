@@ -50,7 +50,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create or update player record in database
+    // If the player already exists, update the avatar_url
+    const { data: player, error: playerError } = await supabaseAdmin
+      .from("players")
+      .select("*")
+      .eq("fid", fid)
+      .single();
+
+    if (player) {
+      const { error: dbError } = await supabaseAdmin
+        .from("players")
+        .update({
+          avatar_url: urlData.publicUrl,
+        })
+        .eq("fid", fid);
+      if (dbError) {
+        console.error("Database update error:", dbError);
+        return NextResponse.json(
+          { error: "Failed to update player record" },
+          { status: 500 }
+        );
+      }
+      return NextResponse.json({
+        success: true,
+      });
+    }
+
+    // Create in database
     const { error: dbError } = await supabaseAdmin.from("players").upsert({
       fid: fid,
       address: address,
