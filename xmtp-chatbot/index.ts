@@ -1,8 +1,8 @@
+// @ts-nocheck
 import { Agent } from "@xmtp/agent-sdk";
 import { getTestUrl } from "@xmtp/agent-sdk/debug";
-import { loadEnvFile } from "./utils/general";
 
-loadEnvFile();
+process.loadEnvFile(".env");
 
 // 2. Spin up the agent
 const agent = await Agent.createFromEnv({
