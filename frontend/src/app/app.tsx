@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import GameRouter from "~/components/game/game-router";
 import { GameScreen } from "~/types";
-import { useAccount, useSwitchChain } from "wagmi";
+import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
 import { WalletConnect } from "~/components/wallet/wallet-actions";
 import { baseSepolia } from "wagmi/chains";
 import { Button } from "~/components/ui/button";
@@ -13,6 +13,7 @@ export default function App() {
   const [currentScreen, setCurrentScreen] = useState<GameScreen>("home");
   const { switchChain } = useSwitchChain();
   const [showGame, setShowGame] = useState(false);
+  const { disconnect } = useDisconnect();
 
   if (showGame) {
     return (
@@ -35,12 +36,18 @@ export default function App() {
       <div className="flex gap-4">
         {isConnected ? (
           chainId === baseSepolia.id ? (
-            <Button
-              onClick={() => setShowGame(true)}
-              className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-lg text-xl font-semibold"
-            >
-              Start Game
-            </Button>
+            <div className="flex flex-col gap-4">
+              <Button
+                onClick={() => setShowGame(true)}
+                className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-lg text-xl font-semibold"
+              >
+                Start Game
+              </Button>
+
+              <Button variant="destructive" onClick={() => disconnect()}>
+                Disconnect Wallet
+              </Button>
+            </div>
           ) : (
             <Button onClick={() => switchChain({ chainId: baseSepolia.id })}>
               Switch to Base Sepolia
