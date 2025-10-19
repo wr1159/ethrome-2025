@@ -6,6 +6,7 @@ import { useFrameContext } from "../providers/frame-provider";
 import { Name } from "@coinbase/onchainkit/identity";
 import VisitDialog from "./visit-dialog";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 interface Player {
   fid: number;
@@ -24,9 +25,19 @@ export default function NeighborhoodScreen({
   onBack,
 }: NeighborhoodScreenProps) {
   const frameContext = useFrameContext();
+  const searchParams = useSearchParams();
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const user = (frameContext?.context as any)?.user ?? null;
   const currentFid = user?.fid ?? -1;
+
+  // Get FID filter from URL params
+  const fidParam = searchParams.get("fid");
+  const allowedFids = fidParam
+    ? fidParam
+        .split(",")
+        .map((f) => parseInt(f.trim()))
+        .filter((f) => !isNaN(f))
+    : null;
 
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,10 +63,18 @@ export default function NeighborhoodScreen({
         const data = await response.json();
 
         if (data.success) {
-          //   Filter out current user
-          const otherPlayers = data.players.filter(
+          // Filter out current user
+          let otherPlayers = data.players.filter(
             (player: Player) => player.fid !== currentFid
           );
+
+          // Apply FID filter if provided
+          if (allowedFids && allowedFids.length > 0) {
+            otherPlayers = otherPlayers.filter((player: Player) =>
+              allowedFids.includes(player.fid)
+            );
+          }
+
           setPlayers(otherPlayers);
           setCurrentPage(0); // Reset to first page when new data loads
         } else {
@@ -350,7 +369,13 @@ export default function NeighborhoodScreen({
         <div className="mt-8 pixel-font text-center max-w-md text-primary">
           <p>Click on a house to visit that player!</p>
           <p>
-            Showing {currentPlayers.length} of {players.length} players
+            {!allowedFids
+              ? "Showing " +
+                currentPlayers.length +
+                " of " +
+                players.length +
+                " players"
+              : "Showing your private neighborhood"}
           </p>
         </div>
       </div>
