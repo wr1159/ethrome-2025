@@ -63,17 +63,15 @@ export default function NeighborhoodScreen({
         const data = await response.json();
 
         if (data.success) {
-          // Filter out current user
-          let otherPlayers = data.players.filter(
-            (player: Player) => player.fid !== currentFid
-          );
-
-          // Apply FID filter if provided
-          if (allowedFids && allowedFids.length > 0) {
-            otherPlayers = otherPlayers.filter((player: Player) =>
-              allowedFids.includes(player.fid)
-            );
-          }
+          // Filter out current user only if not in private neighborhood
+          let otherPlayers =
+            allowedFids && allowedFids.length > 0
+              ? data.players.filter((player: Player) =>
+                  allowedFids.includes(player.fid)
+                )
+              : data.players.filter(
+                  (player: Player) => player.fid !== currentFid
+                );
 
           setPlayers(otherPlayers);
           setCurrentPage(0); // Reset to first page when new data loads
