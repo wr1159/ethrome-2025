@@ -19,7 +19,7 @@ interface Player {
 }
 
 interface NeighborhoodScreenProps {
-  onBack: () => void;
+  onBack?: () => void;
 }
 
 export default function NeighborhoodScreen({
@@ -198,7 +198,7 @@ export default function NeighborhoodScreen({
         >
           Error: {error}
         </div>
-        <Button onClick={onBack} variant="secondary">
+        <Button onClick={onBack ?? (() => {})} variant="secondary">
           Go Back
         </Button>
       </div>
@@ -229,9 +229,11 @@ export default function NeighborhoodScreen({
           >
             Trick or TrETH
           </h1>
-          <Button onClick={onBack} variant="secondary">
-            Back Home
-          </Button>
+          {onBack && (
+            <Button onClick={onBack} variant="secondary">
+              Back Home
+            </Button>
+          )}
         </div>
         {/* Navigation Arrows */}
         {totalPages > 1 && (

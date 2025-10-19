@@ -45,5 +45,5 @@ export async function generateMetadata({
 }
 
 export default function PrivateNeighbourhoodPage() {
-  return <NeighborhoodScreen onBack={() => {}} />;
+  return <NeighborhoodScreen />;
 }
