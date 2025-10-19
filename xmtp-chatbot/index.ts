@@ -38,7 +38,7 @@ agent.on("text", async (ctx) => {
     });
   } catch (error) {
     console.error(error);
-    await ctx.sendText("Error resolving addresses");
+    await ctx.sendText("Error resolving fids");
     return;
   }
   const resolvedFids = Object.values(nenynarUsers)
