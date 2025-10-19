@@ -13,9 +13,7 @@ export async function generateMetadata({
   const fidParam = params.fid as string;
 
   // Create the URL with FID parameters
-  const urlWithParams = fidParam
-    ? `${ROOT_URL}/private-neighbourhood?fid=${fidParam}`
-    : ROOT_URL;
+  const urlWithParams = fidParam ? `${ROOT_URL}/?fid=${fidParam}` : ROOT_URL;
 
   const frame = {
     version: "next",
