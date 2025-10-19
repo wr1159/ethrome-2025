@@ -63,10 +63,66 @@ agent.on("text", async (ctx) => {
     return;
   }
 
+  if (message === "/visits") {
+    const members = await ctx.conversation.members();
+
+    // map all members to their address
+    const memberAddresses = members.map((member) => {
+      return member.accountIdentifiers.find(
+        (id) => id.identifierKind === IdentifierKind.Ethereum
+      )?.identifier;
+    });
+    const filteredMembersAddresses = memberAddresses.filter(
+      (member) => member !== "0x022bdbfe8e2da93d4153563e77b409805fa34a5f"
+    );
+
+    // [key: string]: Array<User>;
+    let nenynarUsers: BulkUsersByAddressResponse;
+    try {
+      nenynarUsers = await client.fetchBulkUsersByEthOrSolAddress({
+        addresses: filteredMembersAddresses,
+      });
+    } catch (error) {
+      console.error(error);
+      await ctx.sendText("Error resolving fids");
+      return;
+    }
+    const resolvedFids = Object.values(nenynarUsers)
+      .flat()
+      .map((user) => user.fid);
+    const filteredResolvedFids = resolvedFids.filter((fid) => fid !== 0);
+    console.log(filteredResolvedFids);
+
+    await ctx.sendText(`🏠 Visit counts for everyone:`);
+
+    // Fetch visit counts for each user
+    for (const fid of filteredResolvedFids) {
+      try {
+        const response = await fetch(
+          `${FRONTEND_URL}/api/visits?homeownerFid=${fid}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          const visitCount = data.visits ? data.visits.length : 0;
+          await ctx.sendText(`${visitCount} visits`);
+        } else {
+          await ctx.sendText(`Error fetching visits`);
+        }
+      } catch (error) {
+        console.error(`Error fetching visits for FID ${fid}:`, error);
+        await ctx.sendText(`Error fetching visits`);
+      }
+    }
+    await ctx.sendText(`🎃 Who is the visitor?:`);
+    await ctx.sendText(`${FRONTEND_URL}`);
+    return;
+  }
+
   // For any other message, show available commands
   await ctx.sendText(`Available commands:
 /start - Open the Trick or TrETH mini app
-/viewall - View all player frames in this chat`);
+/viewall - View all player frames in this chat
+/visits - Show visit counts for everyone in this chat`);
 });
 
 // 4. Log when we're ready
