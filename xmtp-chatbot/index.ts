@@ -1,4 +1,5 @@
 import { Configuration, NeynarAPIClient } from "@neynar/nodejs-sdk";
+import { BulkUsersByAddressResponse } from "@neynar/nodejs-sdk/build/api/models";
 import { Agent, IdentifierKind } from "@xmtp/agent-sdk";
 import { getTestUrl } from "@xmtp/agent-sdk/debug";
 
@@ -30,9 +31,16 @@ agent.on("text", async (ctx) => {
     (member) => member !== "0x022bdbfe8e2da93d4153563e77b409805fa34a5f"
   );
   // [key: string]: Array<User>;
-  const nenynarUsers = await client.fetchBulkUsersByEthOrSolAddress({
-    addresses: filteredMembersAddresses,
-  });
+  let nenynarUsers: BulkUsersByAddressResponse;
+  try {
+    nenynarUsers = await client.fetchBulkUsersByEthOrSolAddress({
+      addresses: filteredMembersAddresses,
+    });
+  } catch (error) {
+    console.error(error);
+    await ctx.sendText("Error resolving addresses");
+    return;
+  }
   const resolvedFids = Object.values(nenynarUsers)
     .flat()
     .map((user) => user.fid);
