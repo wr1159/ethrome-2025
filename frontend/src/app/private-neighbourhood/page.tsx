@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import NeighborhoodScreen from "~/components/game/neighborhood-screen";
 import { METADATA } from "~/lib/utils";
 
 const ROOT_URL =
@@ -44,19 +45,5 @@ export async function generateMetadata({
 }
 
 export default function PrivateNeighbourhoodPage() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <div className="text-center">
-        <div className="pixel-font text-white text-xl mb-4">
-          🎃 Private Neighborhood 🎃
-        </div>
-        <div className="pixel-font text-gray-400 text-sm">
-          This is a private neighborhood view
-        </div>
-        <div className="pixel-font text-gray-400 text-xs mt-2">
-          Only specific players can see this neighborhood
-        </div>
-      </div>
-    </div>
-  );
+  return <NeighborhoodScreen onBack={() => {}} />;
 }
