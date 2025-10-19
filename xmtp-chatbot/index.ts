@@ -118,11 +118,59 @@ agent.on("text", async (ctx) => {
     return;
   }
 
+  if (message === "/private") {
+    const members = await ctx.conversation.members();
+
+    // map all members to their address
+    const memberAddresses = members.map((member) => {
+      return member.accountIdentifiers.find(
+        (id) => id.identifierKind === IdentifierKind.Ethereum
+      )?.identifier;
+    });
+    const filteredMembersAddresses = memberAddresses.filter(
+      (member) => member !== "0x022bdbfe8e2da93d4153563e77b409805fa34a5f"
+    );
+
+    // [key: string]: Array<User>;
+    let nenynarUsers: BulkUsersByAddressResponse;
+    try {
+      nenynarUsers = await client.fetchBulkUsersByEthOrSolAddress({
+        addresses: filteredMembersAddresses,
+      });
+    } catch (error) {
+      console.error(error);
+      await ctx.sendText("Error resolving fids");
+      return;
+    }
+    const resolvedFids = Object.values(nenynarUsers)
+      .flat()
+      .map((user) => user.fid);
+    const filteredResolvedFids = resolvedFids.filter((fid) => fid !== 0);
+    console.log(filteredResolvedFids);
+
+    if (filteredResolvedFids.length === 0) {
+      await ctx.sendText(`No valid FIDs found in this chat`);
+      return;
+    }
+
+    // Create comma-separated FID string
+    const fidString = filteredResolvedFids.join(",");
+    const privateNeighborhoodUrl = `${FRONTEND_URL}/private-neighbourhood?fid=${fidString}`;
+
+    await ctx.sendText(`🏠 Your Private Neighborhood:`);
+    await ctx.sendText(privateNeighborhoodUrl);
+    await ctx.sendText(
+      `🎃 Only you and your chat members can see this neighborhood!`
+    );
+    return;
+  }
+
   // For any other message, show available commands
   await ctx.sendText(`Available commands:
 /start - Open the Trick or TrETH mini app
 /viewall - View all player frames in this chat
-/visits - Show visit counts for everyone in this chat`);
+/visits - Show visit counts for everyone in this chat
+/private - Create a private neighborhood for this chat`);
 });
 
 // 4. Log when we're ready
