@@ -18,40 +18,55 @@ const agent = await Agent.createFromEnv({
 
 // 3. Respond to text messages
 agent.on("text", async (ctx) => {
-  const message = ctx.message.content;
-  const members = await ctx.conversation.members();
+  const message = ctx.message.content.trim().toLowerCase();
 
-  // map all members to their address
-  const memberAddresses = members.map((member) => {
-    return member.accountIdentifiers.find(
-      (id) => id.identifierKind === IdentifierKind.Ethereum
-    )?.identifier;
-  });
-  const filteredMembersAddresses = memberAddresses.filter(
-    (member) => member !== "0x022bdbfe8e2da93d4153563e77b409805fa34a5f"
-  );
-  // [key: string]: Array<User>;
-  let nenynarUsers: BulkUsersByAddressResponse;
-  try {
-    nenynarUsers = await client.fetchBulkUsersByEthOrSolAddress({
-      addresses: filteredMembersAddresses,
-    });
-  } catch (error) {
-    console.error(error);
-    await ctx.sendText("Error resolving fids");
+  if (message === "/start") {
+    await ctx.sendText(`🚀 Trick or TrETH Mini App:`);
+    await ctx.sendText(`${FRONTEND_URL}`);
     return;
   }
-  const resolvedFids = Object.values(nenynarUsers)
-    .flat()
-    .map((user) => user.fid);
-  const filteredResolvedFids = resolvedFids.filter((fid) => fid !== 0);
-  console.log(filteredResolvedFids);
 
-  await ctx.sendText(`🚀 View in Mini App:`);
-  await ctx.sendText(`${FRONTEND_URL}`);
-  for (const fid of filteredResolvedFids) {
-    await ctx.sendText(`${FRONTEND_URL}/frame/${fid}`);
+  if (message === "/viewall") {
+    const members = await ctx.conversation.members();
+
+    // map all members to their address
+    const memberAddresses = members.map((member) => {
+      return member.accountIdentifiers.find(
+        (id) => id.identifierKind === IdentifierKind.Ethereum
+      )?.identifier;
+    });
+    const filteredMembersAddresses = memberAddresses.filter(
+      (member) => member !== "0x022bdbfe8e2da93d4153563e77b409805fa34a5f"
+    );
+
+    // [key: string]: Array<User>;
+    let nenynarUsers: BulkUsersByAddressResponse;
+    try {
+      nenynarUsers = await client.fetchBulkUsersByEthOrSolAddress({
+        addresses: filteredMembersAddresses,
+      });
+    } catch (error) {
+      console.error(error);
+      await ctx.sendText("Error resolving fids");
+      return;
+    }
+    const resolvedFids = Object.values(nenynarUsers)
+      .flat()
+      .map((user) => user.fid);
+    const filteredResolvedFids = resolvedFids.filter((fid) => fid !== 0);
+    console.log(filteredResolvedFids);
+
+    await ctx.sendText(`🎃 View everyone's frames:`);
+    for (const fid of filteredResolvedFids) {
+      await ctx.sendText(`${FRONTEND_URL}/frame/${fid}`);
+    }
+    return;
   }
+
+  // For any other message, show available commands
+  await ctx.sendText(`Available commands:
+/start - Open the Trick or TrETH mini app
+/viewall - View all player frames in this chat`);
 });
 
 // 4. Log when we're ready
