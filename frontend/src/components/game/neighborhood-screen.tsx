@@ -65,7 +65,7 @@ export default function NeighborhoodScreen({
 
         if (data.success) {
           // Filter out current user only if not in private neighborhood
-          let otherPlayers =
+          const otherPlayers =
             allowedFids && allowedFids.length > 0
               ? data.players.filter((player: Player) =>
                   allowedFids.includes(player.fid)
