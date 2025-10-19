@@ -7,6 +7,7 @@ import { Name } from "@coinbase/onchainkit/identity";
 import VisitDialog from "./visit-dialog";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
+import { base } from "viem/chains";
 
 interface Player {
   fid: number;
@@ -293,6 +294,7 @@ export default function NeighborhoodScreen({
                   >
                     <Name
                       address={currentPlayers[0].address as `0x${string}`}
+                      chain={base}
                     />
                   </div>
 
@@ -301,7 +303,7 @@ export default function NeighborhoodScreen({
                     <img
                       src={currentPlayers[0].avatar_url}
                       alt={`${currentPlayers[0].username}'s avatar`}
-                      className="size-16 mx-auto mt-1 border-2 rounded md:size-36 border-primaryry"
+                      className="w-16 mx-auto mt-1 border-2 rounded md:w-36 border-primary"
                       style={{
                         imageRendering: "pixelated",
                       }}
@@ -350,7 +352,7 @@ export default function NeighborhoodScreen({
                     <img
                       src={currentPlayers[1].avatar_url}
                       alt={`${currentPlayers[1].username}'s avatar`}
-                      className="size-16 mx-auto mt-1 border-2 rounded md:size-36"
+                      className="w-16 mx-auto mt-1 border-2 rounded md:w-36"
                       style={{
                         borderColor: "var(--primary)",
                         imageRendering: "pixelated",
